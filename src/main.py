@@ -1,11 +1,12 @@
 import click
 import json
 import numpy as np
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_val_score, train_test_split
 
 from data.make_dataset import make_dataset
 from features.make_features import make_features
 from model.make_model import make_model
+from model.load_model import load_model
 
 @click.group()
 def cli():
@@ -14,16 +15,25 @@ def cli():
 
 @click.command()
 @click.option("--task", help="Can be is_comic_video, is_name or find_comic_name")
-@click.option("--input_filename", default="raw/train.csv", help="File training data")
-@click.option("--model_dump_filename", default="models/dump.json", help="File to dump model")
-def train(task, input_filename, model_dump_filename):
+@click.option("--input_filename", default="data/raw/train.csv", help="File training data")
+@click.option("--model_dump_filename", default="model/dump.json", help="File to dump model")
+@click.option("--config", default={}, help="Config to use")
+def train(task, input_filename, model_dump_filename, config):
+    try:
+        config = json.loads(config)
+    except Exception:
+        print("WARNING: Argument config not well parsed.")
+        config = None
     df = make_dataset(input_filename)
-    X, y = make_features(df)
 
-    model = make_model()
+    # Make features (tokenization, lowercase, stopwords, stemming...)
+    X, y, steps = make_features(df, task, config)
+
+    # Object with .fit, .predict methods
+    model = load_model(steps, model_dump_filename)
     model.fit(X, y)
 
-    return model.dump(model_dump_filename)
+    return model.named_steps["loaded_model"].dump(model_dump_filename)
 
 
 @click.command()
@@ -64,6 +74,13 @@ def evaluate_model(model, X, y):
     print(f"Got accuracy {100 * np.mean(scores)}%")
 
     return scores
+
+
+def train_model(model, X, y):
+    # Scikit learn has function for train model
+    model = model.fit(X, y)
+
+    return model
 
 
 cli.add_command(train)
