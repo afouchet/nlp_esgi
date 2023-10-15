@@ -7,17 +7,17 @@ from sklearn.pipeline import Pipeline
 
 def make_model(config=None, steps=[]):
     if not config:
-        steps.append(["random_forest", RandomForestClassifier()])
+        steps.append(["random_forest", RandomForestClassifier(random_state=42)])
     else:
         # Get the model
         if config.get("Model") == "Bayes":
             steps.append(["naive_bayes", MultinomialNB()])
         elif config.get("Model") == "Linear":
-            steps.append(["linear", LogisticRegression()])
+            steps.append(["linear", LogisticRegression(random_state=42)])
         elif config.get("Model") == "XGBoost":
-            steps.append(["XGBoost", GradientBoostingClassifier()])
+            steps.append(["XGBoost", GradientBoostingClassifier(random_state=42)])
         elif config.get("Model") == "Random_Forest":
-            steps.append(["random_forest", RandomForestClassifier()])
+            steps.append(["random_forest", RandomForestClassifier(random_state=42)])
         else:
-            steps.append(["random_forest", RandomForestClassifier()])
+            steps.append(["random_forest", RandomForestClassifier(random_state=42)])
     return Pipeline(steps)

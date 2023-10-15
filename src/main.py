@@ -56,7 +56,7 @@ def test(task, input_filename, model_dump_filename, output_filename, config):
     # Object with .fit, .predict methods
     model = load_model(steps, model_dump_filename)
 
-    return model.named_steps["loaded_model"].dump(model_dump_filename)
+    return model.named_steps["loaded_model"].dump(output_filename)
 
 
 @click.command()
