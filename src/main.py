@@ -1,12 +1,16 @@
 import click
 import json
+
+import joblib
 import numpy as np
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_val_score
 
 from data.make_dataset import make_dataset
 from features.make_features import make_features
 from model.make_model import make_model
 from model.load_model import load_model
+from sklearn.pipeline import Pipeline
 
 @click.group()
 def cli():
@@ -30,10 +34,11 @@ def train(task, input_filename, model_dump_filename, config):
     X, y, steps = make_features(df, task, config)
 
     # Object with .fit, .predict methods
-    model = load_model(steps, model_dump_filename)
-    model.fit(X, y)
+    model = make_model(config, steps)
+    model.fit(X.values, y.values)
 
-    return model.named_steps["loaded_model"].dump(model_dump_filename)
+    return joblib.dump(model, model_dump_filename)
+    #return model.named_steps["loaded_model"].dump(model_dump_filename)
 
 
 @click.command()
@@ -49,14 +54,15 @@ def test(task, input_filename, model_dump_filename, output_filename, config):
         print("WARNING: Argument config not well parsed.")
         config = None
     df = make_dataset(input_filename)
-
     # Make features (tokenization, lowercase, stopwords, stemming...)
-    X, y, steps = make_features(df, task, config)
-
+    X, y, _ = make_features(df, task, config)
     # Object with .fit, .predict methods
-    model = load_model(steps, model_dump_filename)
-
-    return model.named_steps["loaded_model"].dump(output_filename)
+    pipeline = load_model(model_dump_filename)
+    #print(X)
+    #X = pipeline.named_steps["count_vectorizer"].transform(X.values)
+    pipeline.fit(X, y)
+    scores = pipeline.predict(X)
+    return pipeline.named_steps["loaded_model"].dump(output_filename)
 
 
 @click.command()

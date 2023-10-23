@@ -1,8 +1,13 @@
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import LogisticRegression
+import pickle
 
 
-class Bayes:
-    classifier = MultinomialNB()
+class Linear():
+    classifier = LogisticRegression()
+
+    def load(self, model):
+        self.classifier = model
+
     def fit(self, x_train_tfidf, y_train):
         self.classifier.fit(x_train_tfidf, y_train)
 
@@ -11,4 +16,4 @@ class Bayes:
         return y_pred
 
     def dump(self, filename_output):
-        pass
+        pickle.dump(self.classifier, open(filename_output, "wb"))

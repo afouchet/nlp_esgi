@@ -1,23 +1,24 @@
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
+
+from .bayes import Bayes
+from .linear import Linear
+from .randomforest import RandomForest
+from .XGBoost import XGBoost
 
 
 def make_model(config=None, steps=[]):
     if not config:
-        steps.append(["random_forest", RandomForestClassifier(random_state=42)])
+        steps.append(["loaded_model", RandomForest()])
     else:
         # Get the model
         if config.get("Model") == "Bayes":
-            steps.append(["naive_bayes", MultinomialNB()])
+            steps.append(["loaded_model", Bayes()])
         elif config.get("Model") == "Linear":
-            steps.append(["linear", LogisticRegression(random_state=42)])
+            steps.append(["loaded_model", Linear()])
         elif config.get("Model") == "XGBoost":
-            steps.append(["XGBoost", GradientBoostingClassifier(random_state=42)])
+            steps.append(["loaded_model", XGBoost()])
         elif config.get("Model") == "Random_Forest":
-            steps.append(["random_forest", RandomForestClassifier(random_state=42)])
+            steps.append(["loaded_model", RandomForest()])
         else:
-            steps.append(["random_forest", RandomForestClassifier(random_state=42)])
+            steps.append(["loaded_model", RandomForest()])
     return Pipeline(steps)
