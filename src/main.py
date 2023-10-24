@@ -20,7 +20,7 @@ def cli():
 @click.command()
 @click.option("--task", help="Can be is_comic_video, is_name or find_comic_name")
 @click.option("--input_filename", default="data/raw/train.csv", help="File training data")
-@click.option("--model_dump_filename", default="model/dump.json", help="File to dump model")
+@click.option("--model_dump_filename", default="model/saved/dump.joblib", help="File to dump model")
 @click.option("--config", default={}, help="Config to use")
 def train(task, input_filename, model_dump_filename, config):
     try:
@@ -35,7 +35,7 @@ def train(task, input_filename, model_dump_filename, config):
 
     # Object with .fit, .predict methods
     model = make_model(config, steps)
-    model.fit(X.values, y.values)
+    model.fit(X, y)
 
     return joblib.dump(model, model_dump_filename)
     #return model.named_steps["loaded_model"].dump(model_dump_filename)
@@ -44,7 +44,7 @@ def train(task, input_filename, model_dump_filename, config):
 @click.command()
 @click.option("--task", help="Can be is_comic_video, is_name or find_comic_name")
 @click.option("--input_filename", default="data/raw/train.csv", help="File training data")
-@click.option("--model_dump_filename", default="model/dump.json", help="File to dump model")
+@click.option("--model_dump_filename", default="model/saved/dump.joblib", help="File to dump model")
 @click.option("--output_filename", default="data/processed/prediction.csv", help="Output file for predictions")
 @click.option("--config", default={}, help="Config to use")
 def test(task, input_filename, model_dump_filename, output_filename, config):
@@ -61,7 +61,7 @@ def test(task, input_filename, model_dump_filename, output_filename, config):
     #X = pipeline.named_steps["count_vectorizer"].transform(X.values)
     pipeline.fit(X, y)
     scores = pipeline.predict(X)
-
+    np.savetxt(output_filename, (scores), delimiter=',')
     return evaluate_model(pipeline, X, scores)
 
 
