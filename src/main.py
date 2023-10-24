@@ -58,11 +58,11 @@ def test(task, input_filename, model_dump_filename, output_filename, config):
     X, y, _ = make_features(df, task, config)
     # Object with .fit, .predict methods
     pipeline = load_model(model_dump_filename)
-    #print(X)
     #X = pipeline.named_steps["count_vectorizer"].transform(X.values)
     pipeline.fit(X, y)
     scores = pipeline.predict(X)
-    return pipeline.named_steps["loaded_model"].dump(output_filename)
+
+    return evaluate_model(pipeline, X, scores)
 
 
 @click.command()

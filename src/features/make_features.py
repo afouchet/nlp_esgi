@@ -4,15 +4,17 @@ from nltk.corpus import stopwords
 import nltk
 import string
 import pandas as pd
+import re
+import ast
 from nltk.tokenize import word_tokenize
 from nltk.stem.snowball import FrenchStemmer
 
 
-def preprocess_text(text):
+def preprocess_text(sentence):
     stemmer = FrenchStemmer()
     stop_words = set(stopwords.words('french'))
 
-    words = word_tokenize(text)
+    words = word_tokenize(sentence)
     filtered_words = [stemmer.stem(word) for word in words if word.lower() not in stop_words]
     return ' '.join(filtered_words)
 
@@ -25,14 +27,24 @@ def get_french_stopwords():
     return set(stopwords.words('french'))
 
 
-def remove_punctuation(text):
-    return text.translate(str.maketrans('', '', string.punctuation)).split()
+def remove_punctuation(sentence):
+    return sentence.translate(str.maketrans('', '', string.punctuation)).split()
+
+
+def tokenize_and_separate_apostrophe(sentence):
+    #tokens = nltk.regexp_tokenize(sentence, pattern=r"\b\w+\b|[-]\b|\b[-]\b", gaps=False)
+    #tokens = re.findall(r'\b\w+\b| \s', sentence)
+    tokens = re.findall(r"[\w-]+", sentence)
+
+    return tokens
+
+
+def remove_misstranslate(text):
+    return [word for word in text if word != '``' or word != "\'\'" or word != "(" or word != ")"]
 
 
 def make_features(df, task, config):
-    y = get_output(df, task)
-    X = df["video_name"]
-
+    X, y = get_output(df, task)
     steps = []
     if not config:
         steps.append(["count_vectorizer", CountVectorizer()])
@@ -51,13 +63,26 @@ def make_features(df, task, config):
 
 
 def get_output(df, task):
+    X = df["video_name"]
     if task == "is_comic_video":
         y = df["is_comic"]
     elif task == "is_name":
         y = df["is_name"]
+        len_y = []
+        len_x = []
+        y = [ast.literal_eval(item) for item in y]
+        for numbers in y:
+            len_y.append(len(numbers))
+        # TODO Ne pas supp, c'est ce qu'il faut faire normalement
+        #y = [item for sublist in y for item in sublist]
+        X = X.apply(tokenize_and_separate_apostrophe)
+        for numbers in X:
+            len_x.append(len(numbers))
+        print(X)
+        pd.DataFrame({"y":len_y, "x":len_x}).to_csv("TEST.csv")
     elif task == "find_comic_name":
         y = df["comic_name"]
     else:
         raise ValueError("Unknown task")
 
-    return y
+    return X, y
