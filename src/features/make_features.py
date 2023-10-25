@@ -68,16 +68,17 @@ def make_features(df, task, config):
                 y.append([0] * (len(x) - 1) + [1])
             steps.append(["count_vectorizer", CountVectorizer()])
         elif config.get("Features") == "is_capitalized":
-            y = []
-            for x in X:
+            X_post_features = []
+            for i, x in enumerate(X):
                 sentence = []
                 for word in x:
-                    if word.isupper():
-                        sentence.append(1)
+                    if word.istitle():
+                        sentence.append((word, 1))
                     else:
-                        sentence.append(0)
-                y.append(sentence)
-            steps.append(["count_vectorizer", CountVectorizer()])
+                        sentence.append((word, 0))
+                X_post_features.append(sentence)
+            X = X_post_features
+            steps.append(["count_vectorizer", CountVectorizer(lowercase=False)])
         else:
             steps.append(["count_vectorizer", CountVectorizer()])
     if task == "is_name":
@@ -105,7 +106,6 @@ def get_output(df, task):
             if len_x[i] != len_y[i]:
                 y = y.drop(index=i)
                 X = X.drop(index=i)
-
         # Debug len of our features: pd.DataFrame({"y":len_y, "x":len_x}).to_csv("TEST.csv")
     elif task == "find_comic_name":
         y = df["comic_name"]
