@@ -88,6 +88,7 @@ def make_features(df, task, config):
     if task == "is_name":
         y = [item for sublist in y for item in sublist]
         y = pd.DataFrame({'Label': y})
+    #TODO: Pour l'erreur de is_name, si on met X["Word"], tout fonctionne. Mais on DOIT mettre les deux colonnes
     return X, y, steps
 
 
