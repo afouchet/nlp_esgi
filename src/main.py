@@ -89,6 +89,7 @@ def evaluate(task, input_filename, config):
 
 def evaluate_model(model, X, y):
     # Scikit learn has function for cross validation
+    #TODO CHECK SI LE PARAM CV FOUT LA MERDE
     scores = cross_val_score(model, X, y, scoring="accuracy")
 
     print(f"Got accuracy {100 * np.mean(scores)}%")

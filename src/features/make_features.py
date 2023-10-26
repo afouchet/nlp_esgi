@@ -1,5 +1,5 @@
 from sklearn.pipeline import Pipeline
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from nltk.corpus import stopwords
 import nltk
 import string
@@ -43,6 +43,19 @@ def remove_misstranslate(text):
     return [word for word in text if word != '``' or word != "\'\'" or word != "(" or word != ")"]
 
 
+def word_plus_tag(X):
+    sentence = []
+    features = []
+    for i, x in enumerate(X):
+        for word in x:
+            sentence.append(word)
+            if word.istitle():
+                features.append('1')
+            else:
+                features.append('0')
+    return pd.DataFrame({'Word': sentence, 'Tag': features})
+
+
 def make_features(df, task, config):
     X, y = get_output(df, task)
     steps = []
@@ -68,22 +81,13 @@ def make_features(df, task, config):
                 y.append([0] * (len(x) - 1) + [1])
             steps.append(["count_vectorizer", CountVectorizer()])
         elif config.get("Features") == "is_capitalized":
-            X_post_features = []
-            for i, x in enumerate(X):
-                sentence = []
-                for word in x:
-                    if word.istitle():
-                        sentence.append((word, 1))
-                    else:
-                        sentence.append((word, 0))
-                X_post_features.append(sentence)
-            X = X_post_features
-            steps.append(["count_vectorizer", CountVectorizer(lowercase=False)])
+            X = word_plus_tag(X)
+            steps.append(["count_vectorizer", CountVectorizer()])
         else:
             steps.append(["count_vectorizer", CountVectorizer()])
     if task == "is_name":
         y = [item for sublist in y for item in sublist]
-        X = [item for sublist in X for item in sublist]
+        y = pd.DataFrame({'Label': y})
     return X, y, steps
 
 
@@ -102,6 +106,7 @@ def get_output(df, task):
             len_y.append(len(numbers))
         for numbers in X:
             len_x.append(len(numbers))
+        # Drop the inconsistency
         for i in range(len(len_x)-1, -1, -1):
             if len_x[i] != len_y[i]:
                 y = y.drop(index=i)
