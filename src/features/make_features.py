@@ -1,5 +1,8 @@
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import GradientBoostingClassifier
 from nltk.corpus import stopwords
 import nltk
 import string
@@ -43,17 +46,62 @@ def remove_misstranslate(text):
     return [word for word in text if word != '``' or word != "\'\'" or word != "(" or word != ")"]
 
 
-def word_plus_tag(X):
+def word_plus_tag_capitalized(X):
     sentence = []
     features = []
     for i, x in enumerate(X):
         for word in x:
             sentence.append(word)
             if word.istitle():
-                features.append('1')
+                features.append(1)
             else:
-                features.append('0')
+                features.append(0)
     return pd.DataFrame({'Word': sentence, 'Tag': features})
+
+
+def word_plus_tag_start(X):
+    sentence = []
+    features = []
+    for i, x in enumerate(X):
+        for j, word in enumerate(x):
+            sentence.append(word)
+            if j == 0:
+                features.append(1)
+            else:
+                features.append(0)
+    return pd.DataFrame({'Word': sentence, 'Tag': features})
+
+
+def word_plus_tag_end(X):
+    sentence = []
+    features = []
+    for i, x in enumerate(X):
+        for j, word in enumerate(x):
+            sentence.append(word)
+            if j == (len(x)-1):
+                features.append(1)
+            else:
+                features.append(0)
+    return pd.DataFrame({'Word': sentence, 'Tag': features})
+
+
+def personnal_parsing(X, y):
+    len_y = []
+    len_x = []
+    y = [ast.literal_eval(item) for item in y]
+    y = pd.Series(y)
+    X = X.apply(tokenize_and_separate_apostrophe)
+    for numbers in y:
+        len_y.append(len(numbers))
+    for numbers in X:
+        len_x.append(len(numbers))
+    # Drop the inconsistency
+    for i in range(len(len_x) - 1, -1, -1):
+        if len_x[i] != len_y[i]:
+            y = y.drop(index=i)
+            X = X.drop(index=i)
+    # Debug len of our features: pd.DataFrame({"y":len_y, "x":len_x}).to_csv("TEST.csv")
+    return X, y
 
 
 def make_features(df, task, config):
@@ -71,24 +119,63 @@ def make_features(df, task, config):
             X = X.apply(preprocess_text)
             steps.append(["count_vectorizer", CountVectorizer()])
         elif config.get("Features") == "is_starting_word":
-            y = []
-            for x in X:
-                y.append([1] + [0] * (len(x) - 1))
-            steps.append(["count_vectorizer", CountVectorizer()])
+            X = word_plus_tag_start(X)
+            preprocessor = ColumnTransformer(
+                transformers=[
+                    ('text', TfidfVectorizer(), 'Word'),
+                    ('num', StandardScaler(), ['Tag'])
+                ],
+                remainder='passthrough'
+            )
+            steps.append(["count_vectorizer", preprocessor])
         elif config.get("Features") == "is_final_word":
-            y = []
-            for x in X:
-                y.append([0] * (len(x) - 1) + [1])
-            steps.append(["count_vectorizer", CountVectorizer()])
+            X = word_plus_tag_end(X)
+            preprocessor = ColumnTransformer(
+                transformers=[
+                    ('text', TfidfVectorizer(), 'Word'),
+                    ('num', StandardScaler(), ['Tag'])
+                ],
+                remainder='passthrough'
+            )
+            steps.append(["count_vectorizer", preprocessor])
         elif config.get("Features") == "is_capitalized":
-            X = word_plus_tag(X)
-            steps.append(["count_vectorizer", CountVectorizer()])
+            X = word_plus_tag_capitalized(X)
+            # /!\ Beware, you need to be precise if there is a column with caracters. We need to make a transformer
+            preprocessor = ColumnTransformer(
+                transformers=[
+                    ('text', TfidfVectorizer(), 'Word'),
+                    ('num', StandardScaler(), ['Tag'])
+                ],
+                remainder='passthrough'
+            )
+            steps.append(["count_vectorizer", preprocessor])
+        elif config.get("Features") == "mix_model":
+            y_comic = df["is_comic"]
+            pipeline = Pipeline([("count_vectorizer", CountVectorizer()),
+                                 (["loaded_model", GradientBoostingClassifier()])])
+            pipeline.fit(df["video_name"], y_comic)
+            prediction_comic = pipeline.predict(df["video_name"])
+            print(X)
+            print(df["is_name"])
+            X = word_plus_tag_capitalized(X)
+            preprocessor = ColumnTransformer(
+                transformers=[
+                    ('text', TfidfVectorizer(), 'Word'),
+                    ('num', StandardScaler(), ['Tag'])
+                ],
+                remainder='passthrough'
+            )
+            pipeline = Pipeline([("count_vectorizer", preprocessor),
+                                 (["loaded_model", GradientBoostingClassifier()])])
+            pipeline.fit(X, y)
+            prediction_name = pipeline.predict(X)
+            print(prediction_name)
         else:
             steps.append(["count_vectorizer", CountVectorizer()])
     if task == "is_name":
         y = [item for sublist in y for item in sublist]
         y = pd.DataFrame({'Label': y})
-    #TODO: Pour l'erreur de is_name, si on met X["Word"], tout fonctionne. Mais on DOIT mettre les deux colonnes
+        y = y.values.ravel()
     return X, y, steps
 
 
@@ -98,23 +185,14 @@ def get_output(df, task):
         y = df["is_comic"]
     elif task == "is_name":
         y = df["is_name"]
-        len_y = []
-        len_x = []
+        X, y = personnal_parsing(X, y)
+    elif task == "find_comic_name":
+        y = df["comic_name"]
         y = [ast.literal_eval(item) for item in y]
         y = pd.Series(y)
         X = X.apply(tokenize_and_separate_apostrophe)
-        for numbers in y:
-            len_y.append(len(numbers))
-        for numbers in X:
-            len_x.append(len(numbers))
-        # Drop the inconsistency
-        for i in range(len(len_x)-1, -1, -1):
-            if len_x[i] != len_y[i]:
-                y = y.drop(index=i)
-                X = X.drop(index=i)
-        # Debug len of our features: pd.DataFrame({"y":len_y, "x":len_x}).to_csv("TEST.csv")
-    elif task == "find_comic_name":
-        y = df["comic_name"]
+        print(X)
+        print(y)
     else:
         raise ValueError("Unknown task")
 
