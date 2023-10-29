@@ -11,7 +11,7 @@ import re
 import ast
 from nltk.tokenize import word_tokenize
 from nltk.stem.snowball import FrenchStemmer
-
+from nltk import pos_tag, ne_chunk
 
 def preprocess_text(sentence):
     stemmer = FrenchStemmer()
@@ -115,9 +115,20 @@ def setup_dataframe(first_df, second_df, third_df):
                 temp_name.append(second_df["X_name"].iloc[count_for_third_df])
             count_for_third_df += 1
         comic_name.append(" ".join(temp_name))
-    #print(comic_name)
-    #print(pd.DataFrame({"comic_name": comic_name}))
     return comic_name
+
+
+def extract_names(text):
+    tokens = word_tokenize(text, language='french')
+    # French not supported :/
+    tagged = pos_tag(tokens, lang='eng')
+    named_entities_list = ne_chunk(tagged, binary=False)
+    names = []
+    for entity in named_entities_list:
+        if isinstance(entity, nltk.Tree):
+            name = " ".join([word for word, tag in entity.leaves()])
+            names.append(name)
+    return names
 
 
 def make_features(df, task, config):
@@ -199,6 +210,17 @@ def make_features(df, task, config):
             sentence_df = pd.DataFrame({"Sentence": [ast.literal_eval(item) for item in df["video_name_parsed"]]})
             predicted_name_comic = pd.DataFrame({"comic_name": (setup_dataframe(sentence_df, X_predicted_name, pd.DataFrame({"is_comic":prediction_comic})))})
             return predicted_name_comic, None, None
+        elif config.get("Features") == "named_entity":
+            X = pd.DataFrame({"video_name": df['video_name'].apply(extract_names)})
+            X = pd.DataFrame({"video_name": X['video_name'].apply(lambda x: ' '.join(x))})
+            preprocessor = ColumnTransformer(
+                transformers=[
+                    ('text', TfidfVectorizer(), 'video_name')
+                ],
+                remainder='passthrough'
+            )
+            steps.append(["count_vectorizer", preprocessor])
+            y = df['is_comic']
         else:
             steps.append(["count_vectorizer", CountVectorizer()])
     if task == "is_name":
