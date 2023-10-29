@@ -27,7 +27,7 @@ def get_french_stopwords():
         nltk.data.find('corpora/stopwords')
     except LookupError:
         nltk.download('stopwords')
-    return set(stopwords.words('french'))
+    return list(stopwords.words('french'))
 
 
 def remove_punctuation(sentence):
@@ -179,7 +179,7 @@ def make_features(df, task, config):
         elif config.get("Features") == "mix_model":
             # Set the is_comic feature
             y_comic = df["is_comic"]
-            pipeline = Pipeline([("count_vectorizer", CountVectorizer()),
+            pipeline = Pipeline([("count_vectorizer", CountVectorizer(stop_words=get_french_stopwords())),
                                  (["loaded_model", GradientBoostingClassifier()])])
             pipeline.fit(df["video_name"], y_comic)
             prediction_comic = pipeline.predict(df["video_name"])
