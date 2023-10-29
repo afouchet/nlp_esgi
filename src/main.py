@@ -1,6 +1,7 @@
 import click
 import json
-
+import pandas as pd
+import ast
 import joblib
 import numpy as np
 from sklearn.linear_model import LogisticRegression
@@ -80,22 +81,38 @@ def evaluate(task, input_filename, config):
     # Make features (tokenization, lowercase, stopwords, stemming...)
     X, y, steps = make_features(df, task, config)
 
-    # Object with .fit, .predict methods
-    model = make_model(config, steps)
+    if config.get("Features") == "mix_model":
+        evaluate_part3(X["comic_name"], pd.DataFrame({"comic_name": [ast.literal_eval(item) for item in df["comic_name"]]})["comic_name"])
+    else:
+        # Object with .fit, .predict methods
+        model = make_model(config, steps)
 
-    # Run k-fold cross validation. Print results
-    return evaluate_model(model, X, y)
+        # Run k-fold cross validation. Print results
+        return evaluate_model(model, X, y)
+
 
 
 def evaluate_model(model, X, y):
     # Scikit learn has function for cross validation
-    #TODO CHECK SI LE PARAM CV FOUT LA MERDE
     scores = cross_val_score(model, X, y, scoring="accuracy")
 
     print(f"Got accuracy {100 * np.mean(scores)}%")
 
     return scores
 
+
+
+def evaluate_part3(X, y):
+    max_score = len(X)
+    score = 0
+    for i, _ in enumerate(X):
+        if len(y.values[i]) == 0 and X.values[i] == "":
+            score += 1
+        elif len(y.values[i]) == 0:
+            pass
+        elif X.values[i] == y.values[i][0]:
+            score += 1
+    print(f"Got accuracy {(score/max_score)*100}%")
 
 def train_model(model, X, y):
     # Scikit learn has function for train model

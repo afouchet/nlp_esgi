@@ -104,6 +104,22 @@ def personnal_parsing(X, y):
     return X, y
 
 
+def setup_dataframe(first_df, second_df, third_df):
+    # Retrieve the comic name
+    comic_name = []
+    count_for_third_df = 0
+    for i, sentence in enumerate(first_df["Sentence"]):
+        temp_name = []
+        for j, word in enumerate(sentence):
+            if third_df["is_comic"].iloc[i] == 1 and second_df["is_name"].iloc[count_for_third_df] == 1:
+                temp_name.append(second_df["X_name"].iloc[count_for_third_df])
+            count_for_third_df += 1
+        comic_name.append(" ".join(temp_name))
+    #print(comic_name)
+    #print(pd.DataFrame({"comic_name": comic_name}))
+    return comic_name
+
+
 def make_features(df, task, config):
     X, y = get_output(df, task)
     steps = []
@@ -150,26 +166,39 @@ def make_features(df, task, config):
             )
             steps.append(["count_vectorizer", preprocessor])
         elif config.get("Features") == "mix_model":
+            # Set the is_comic feature
             y_comic = df["is_comic"]
             pipeline = Pipeline([("count_vectorizer", CountVectorizer()),
                                  (["loaded_model", GradientBoostingClassifier()])])
             pipeline.fit(df["video_name"], y_comic)
             prediction_comic = pipeline.predict(df["video_name"])
-            print(X)
-            print(df["is_name"])
-            X = word_plus_tag_capitalized(X)
+
+            # Set the is_name feature
+            y_name = df["is_name"]
+            y_name = [ast.literal_eval(item) for item in y_name]
+            y_name = [item for list_item in y_name for item in list_item]
+            y_name = pd.DataFrame({'Label': y_name})
+            y_name = y_name.values.ravel()
+            X_name = df["video_name_parsed"]
+            X_name = [ast.literal_eval(item) for item in X_name]
+            X_name = [(item, 1) if item.istitle() else (item, 0) for list_item in X_name for item in list_item]
+            X_name = pd.DataFrame(X_name, columns=['Word', 'Tag'])
             preprocessor = ColumnTransformer(
                 transformers=[
-                    ('text', TfidfVectorizer(), 'Word'),
-                    ('num', StandardScaler(), ['Tag'])
+                    ('text', TfidfVectorizer(), 'Word')
                 ],
                 remainder='passthrough'
             )
             pipeline = Pipeline([("count_vectorizer", preprocessor),
                                  (["loaded_model", GradientBoostingClassifier()])])
-            pipeline.fit(X, y)
-            prediction_name = pipeline.predict(X)
-            print(prediction_name)
+            pipeline.fit(X_name, y_name)
+            prediction_name = pipeline.predict(X_name)
+            X_predicted_name = pd.DataFrame({"X_name": X_name["Word"], "is_name": prediction_name})
+
+            # Retrieve the result and send it
+            sentence_df = pd.DataFrame({"Sentence": [ast.literal_eval(item) for item in df["video_name_parsed"]]})
+            predicted_name_comic = pd.DataFrame({"comic_name": (setup_dataframe(sentence_df, X_predicted_name, pd.DataFrame({"is_comic":prediction_comic})))})
+            return predicted_name_comic, None, None
         else:
             steps.append(["count_vectorizer", CountVectorizer()])
     if task == "is_name":
@@ -191,8 +220,6 @@ def get_output(df, task):
         y = [ast.literal_eval(item) for item in y]
         y = pd.Series(y)
         X = X.apply(tokenize_and_separate_apostrophe)
-        print(X)
-        print(y)
     else:
         raise ValueError("Unknown task")
 
