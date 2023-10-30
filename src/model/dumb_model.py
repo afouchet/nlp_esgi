@@ -11,7 +11,7 @@ class DumbModel:
 
     def dump(self, filename_output):
         # Serializing json
-        json_object = json.dumps(dict(), indent=4)
+        json_object = json.dumps({}, indent=4)
 
         # Writing to sample.json
         with open(filename_output, "w") as outfile:

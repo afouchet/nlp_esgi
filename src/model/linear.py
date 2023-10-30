@@ -12,8 +12,7 @@ class Linear():
         self.classifier.fit(x_train_tfidf, y_train)
 
     def predict(self, x_test_tfidf):
-        y_pred = self.classifier.predict(x_test_tfidf)
-        return y_pred
+        return self.classifier.predict(x_test_tfidf)
 
     def dump(self, filename_output):
         pickle.dump(self.classifier, open(filename_output, "wb"))
