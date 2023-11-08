@@ -1,4 +1,4 @@
-# NLP TD
+# NLP TD 1
 
 L'objectif de ce TD est de créer un modèle "nom de vidéo" -> "nom du comique" si c'est la chronique d'un comique, None sinon. On formulera le problème en 2 tâches d'apprentissage:
 - une de text classification pour savoir si la vidéo est une chronique comique
@@ -17,15 +17,15 @@ On se contentera de méthodes pré-réseaux de neurones. Nos features sont expli
 La codebase doit fournir les entry points suivant:
 - Un entry point pour train sur une "task", prenant en entrée le path aux données de train et dumpant le modèle dans "model_dump" 
 ```
-python src/main.py train --task=is_comic_video --input_file=data/raw/train.csv --model_dump=models/model.json
+python src/main.py train --task=is_comic_video --input_filename=data/raw/train.csv --model_dump_filename=models/model.json
 ```
 - Un entry point pour predict sur une "task", prenant en entrée le path au modèle dumpé, le path aux données à prédire et outputtant dans un csv les prédictions
 ```
-python src/main.py predict --task=is_comic_video --input_file=data/raw/test.csv --model_dump=models/model.json --output_file=data/processed/prediction.csv
+python src/main.py predict --task=is_comic_video --input_filename=data/raw/test.csv --model_dump_filename=models/model.json --output_filename=data/processed/prediction.csv
 ```
 - Un entry point pour evaluer un modèle sur une "task", prenant en entrée le path aux données de train.
 ```
-python src/main.py evaluate --task=is_comic_video --input_file=data/raw/train.csv
+python src/main.py evaluate --task=is_comic_video --input_filename=data/raw/train.csv
 ```
 
 Les "tasks":
@@ -43,15 +43,13 @@ Dans [ce lien](https://docs.google.com/spreadsheets/d/1x6MITsoffSq7Hs3mDIe1YLVvp
 
 ## Partie 1: Text classification: prédire si la vidéo est une chronique comique
 
-### Librairies
-
-- sklearn.feature_extraction.text: Regarder les features disponibles. Lesquelles semblent adaptées ?
-- NLTK: télécharger le corpus français. La librairie permettra de retirer les stopwords et de stemmer les mots
-
 ### Tasks
 
-- Adapter "src/" pour que la pipeline "evaluate" marche sur la task "is_comic_video", avec un modèle constant (fournissant la baseline)
-- Expérimenter les différentes features & modèles qui paraissaient adapter
+- Run la pipeline evaluate "python src/main.py evaluate". Elle devrait marcher sur la task "is_comic_video"
+- Essayed d'optimiser en ajoutant / optimisant les features faites dans "make_features":
+    - Regarder les features disponibles dans sklearn.feature_extraction.text. Lesquelles semblent adaptées ?
+    - Regarder NLTK. télécharger le corpus français. La librairie permettra de retirer les stopwords et de stemmer les mots
+- Essayer d'autres modèles (regression logistic, Bayesian, etc)
 - Ecrire le rapport (dans report/td1.{your choice}) avec:
    - Les a-priori que vous aviez sur les features & modèles utiles ou non
    - Quels ont été les apports individuels de chacune de ces variation ?
@@ -83,7 +81,36 @@ Dans [ce lien](https://docs.google.com/spreadsheets/d/1x6MITsoffSq7Hs3mDIe1YLVvp
 - Adapter "src/" pour que les pipelines "train" et "predict" marchent
 - Terminer le rapport
 
+# Troubleshooting
 
+Quelques problèmes rencontrés et leur solution
+
+## ImportError "No module name src"
+
+Python n'a pas src dans son path.
+Pour l'instant, on n'a pas trouvé de solution  qui marche dans tous les cas.
+
+Solution 1:
+Dans le root folder (avant src/)
+```
+conda develop .
+```
+
+Solution 2: change "from src.data..." to "from data..."
+(Dans le "pythonpath" (là où python va chercher le code), il est normal de regarder "src/")
+
+Solution 3: PyCharm
+Definir le dossier root "nlp_esgi" comme source de code (clic droit sur le dossier, "set as source root")
+
+# NLP TD 2:
+
+Dans ce TD, nous allons créer et optimiser un réseau de neurones récurrents (RNN) avec PyTorch dans la partie 1
+Dans la partie 2, nous allons utiliser ce RNN pour une tâche de named-entity recognition
+Ensuite, vous devrez utiliser le modèle de named-entity recognition à notre problème de reconnaissance de nom de comiques dans les videos youtube (la partie 2, named-entity recognition)
+
+Evaluation:
+- Rapport sur les itérations pour le RNN pour named-entity recognition
+- Test du nouveau modèle "Named-entity recognition" sur le jeu de données test des videos youtube.
 
 
 
