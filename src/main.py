@@ -1,5 +1,6 @@
 import click
 import numpy as np
+from sklearn.metrics import make_scorer
 from sklearn.model_selection import cross_val_score
 
 from src.data.make_dataset import make_dataset
@@ -47,6 +48,9 @@ def evaluate(task, input_filename):
     # Object with .fit, .predict methods
     model = make_model(task)
 
+    import ipdb
+    ipdb.set_trace()
+
     # Run k-fold cross validation. Print results
     return evaluate_model(model, X, y, task)
 
@@ -56,15 +60,29 @@ def evaluate_model(model, X, y, task):
         scoring = "accuracy"
     elif task == "is_name":
         scoring = "neg_log_loss"
-    else:
-        scoring = "accuracy"
+    elif task == "find_comic_name":
+        scoring = make_scorer(compare_comic_list)
 
     # Scikit learn has function for cross validation
-    scores = cross_val_score(model, X, y, scoring="neg_log_loss")
+    scores = cross_val_score(model, X, y, scoring=scoring, n_jobs=1)
 
     print(f"Got accuracy {np.mean(scores)}%")
 
     return scores
+
+
+def compare_comic_list(y_true, y_pred):
+    score = 0
+    for true_list, pred_list in zip(y_true, y_pred):
+        if not pred_list:
+            score += not true_list
+        else:
+            score += all(
+                any(name in true_name for true_name in true_list)
+                for name in pred_list
+            )
+            
+    return score / len(y_true)
 
 
 cli.add_command(train)

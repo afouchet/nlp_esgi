@@ -85,12 +85,12 @@ def revert_token_pred_in_video_name(df, pred_by_token):
     df_exploded = df.explode("tokens")
     df_exploded["prediction"] = pred_by_token
 
-    df_with_group = (
-        df_exploded.groupby("video_name", as_index=False)["prediction"]
+    df_grouped_prediction = (
+        df_exploded.groupby("video_name")["prediction"]
         .apply(list)
     )
 
-    df_with_group["tokens"] = df["tokens"]
+    df = df.join(df_grouped_prediction, on="video_name")
 
-    return df_with_group
+    return df
     
