@@ -40,11 +40,6 @@ class ComicNameFinder():
         self._fit_name_model(df)
         self._fit_comic_model(df)
     
-    def predict(self, df):
-        df = df.copy()
-        df_with_name_pred = self._predict_names(df)
-        return self._predict_comic_name(df_with_name_pred)
-
     def _fit_comic_model(self, df):
         X, y = make_features(df, task="is_comic_video")
         self._model_comic.fit(X, y)
@@ -52,6 +47,11 @@ class ComicNameFinder():
     def _fit_name_model(self, df):
         X, y = make_features(df, task="is_name")
         self._model_name.fit(X, y)
+
+    def predict(self, df):
+        df = df.copy()
+        df_with_name_pred = self._predict_names(df)
+        return self._predict_comic_name(df_with_name_pred)
 
     def _predict_names(self, df):
         X, _ = make_features(df, task="is_name", is_test=True)
@@ -75,12 +75,15 @@ class ComicNameFinder():
 
         # Filling case no name
         df_with_name_pred.loc[id_not_comic, "pred_names"] = None
-        df_with_name_pred["pred_names"] = df_with_name_pred["pred_names"].apply(lambda name_list: name_list if name_list else [])
+        df_with_name_pred["pred_names"] = df_with_name_pred["pred_names"].apply(
+            lambda name_list: name_list if name_list else []
+        )
 
         return df_with_name_pred["pred_names"]
     
     def get_params(self, deep=True):
         return {}
+
 
 def extract_names_from_labeled_tokens(tokens, labels):
     """

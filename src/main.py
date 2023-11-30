@@ -48,12 +48,11 @@ def evaluate(task, input_filename):
     # Object with .fit, .predict methods
     model = make_model(task)
 
-    import ipdb
-    ipdb.set_trace()
-
     # Run k-fold cross validation. Print results
     return evaluate_model(model, X, y, task)
 
+
+from sklearn.metrics import make_scorer
 
 def evaluate_model(model, X, y, task):
     if task == "is_comic_video":
@@ -61,7 +60,7 @@ def evaluate_model(model, X, y, task):
     elif task == "is_name":
         scoring = "neg_log_loss"
     elif task == "find_comic_name":
-        scoring = make_scorer(compare_comic_list)
+        scoring = make_scorer(name_list_accuracy)
 
     # Scikit learn has function for cross validation
     scores = cross_val_score(model, X, y, scoring=scoring, n_jobs=1)
@@ -71,18 +70,10 @@ def evaluate_model(model, X, y, task):
     return scores
 
 
-def compare_comic_list(y_true, y_pred):
-    score = 0
-    for true_list, pred_list in zip(y_true, y_pred):
-        if not pred_list:
-            score += not true_list
-        else:
-            score += all(
-                any(name in true_name for true_name in true_list)
-                for name in pred_list
-            )
-            
-    return score / len(y_true)
+def name_list_accuracy(y_true, y_pred):
+    return sum(
+        true_names == pred_names for true_names, pred_names in zip(y_true, y_pred)
+    ) / len(y_true)
 
 
 cli.add_command(train)
