@@ -1,10 +1,9 @@
 import click
 import numpy as np
-from sklearn.metrics import make_scorer
 from sklearn.model_selection import cross_val_score
 
 from src.data.make_dataset import make_dataset
-from src.features.make_features import make_features, revert_token_pred_in_video_name
+from src.features.make_features import make_features
 from src.model.main import make_model
 
 @click.group()
@@ -20,7 +19,7 @@ def train(task, input_filename, model_dump_filename):
     df = make_dataset(input_filename)
     X, y = make_features(df)
 
-    model = make_model(task)
+    model = make_model()
     model.fit(X, y)
 
     return model.dump(model_dump_filename)
@@ -46,34 +45,19 @@ def evaluate(task, input_filename):
     X, y = make_features(df, task)
 
     # Object with .fit, .predict methods
-    model = make_model(task)
+    model = make_model()
 
     # Run k-fold cross validation. Print results
-    return evaluate_model(model, X, y, task)
+    return evaluate_model(model, X, y)
 
 
-from sklearn.metrics import make_scorer
-
-def evaluate_model(model, X, y, task):
-    if task == "is_comic_video":
-        scoring = "accuracy"
-    elif task == "is_name":
-        scoring = "neg_log_loss"
-    elif task == "find_comic_name":
-        scoring = make_scorer(name_list_accuracy)
-
+def evaluate_model(model, X, y):
     # Scikit learn has function for cross validation
-    scores = cross_val_score(model, X, y, scoring=scoring, n_jobs=1)
+    scores = cross_val_score(model, X, y, scoring="accuracy")
 
-    print(f"Got accuracy {np.mean(scores)}%")
+    print(f"Got accuracy {100 * np.mean(scores)}%")
 
     return scores
-
-
-def name_list_accuracy(y_true, y_pred):
-    return sum(
-        true_names == pred_names for true_names, pred_names in zip(y_true, y_pred)
-    ) / len(y_true)
 
 
 cli.add_command(train)
