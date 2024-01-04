@@ -25,8 +25,24 @@ def _find_indexes(txt, words):
     nb_words = len(txt_words)
     i_start = next(i for i in range(len(words)) if words[i:i+nb_words] == txt_words)
     return range(i_start, i_start + nb_words)
-    
 
 
 def _extract_text_with_labels(target):
-    return [("9h", "trigger_time")]
+    labels_start = target.find("(")
+    labels_end = len(target) - list(reversed(target)).index(")")
+
+    target = target[labels_start+1:labels_end-1].strip()
+
+    text_with_label = []
+    while target:
+        txt_label_start = target.find("«")
+        txt_label_end = target.find("»")
+
+        label = target[:txt_label_start].strip()
+        txt_label = target[txt_label_start+1:txt_label_end].strip()
+
+        text_with_label.append([txt_label, label])
+
+        target = target[txt_label_end+1:]
+
+    return text_with_label
