@@ -50,7 +50,8 @@ def _extract_text_with_labels(target):
             text_with_label += this_text_with_label
 
             # find last ")"
-            label_txt = txt_label_start + len(sub_text_with_label)
+            txt_in_parenthesis = _find_content_in_parenthesis(target)
+            label_txt = txt_label_start + len(txt_in_parenthesis) + 2
             end_parenthesis = target[label_txt:].find(")") + label_txt
             txt_label_end = end_parenthesis
 
