@@ -29,24 +29,59 @@ def _find_indexes(txt, words):
 
 
 def _extract_text_with_labels(target):
-    labels_start = target.find("(")
-    labels_end = len(target) - list(reversed(target)).index(")")
-
-    target = target[labels_start+1:labels_end-1].strip()
+    target = _find_content_in_parenthesis(target)
 
     text_with_label = []
     while target:
         txt_label_start = target.find("«")
         txt_label_end = target.find("»")
 
-        label = target[:txt_label_start].strip()
-        txt_label = target[txt_label_start+1:txt_label_end].strip()
+        if "(" in target[:txt_label_start]:
+            # There is nested content
+            sub_text_with_label = _extract_text_with_labels(target)
 
-        text_with_label.append([txt_label, label])
+            txt_label_start = target.find("(")
+            label = target[:txt_label_start].split()[0].strip()
+
+            this_text_with_label = [
+                (txt, f"{label}__{sub_label}")
+                for txt, sub_label in sub_text_with_label
+            ]
+            text_with_label += this_text_with_label
+
+            # find last ")"
+            label_txt = txt_label_start + len(sub_text_with_label)
+            end_parenthesis = target[label_txt:].find(")") + label_txt
+            txt_label_end = end_parenthesis
+
+        else:
+            label = target[:txt_label_start].split()[0].strip()
+            txt_label = target[txt_label_start+1:txt_label_end].strip()
+
+            text_with_label.append([txt_label, label])
 
         target = target[txt_label_end+1:]
 
     return text_with_label
+
+
+def _find_content_in_parenthesis(txt):
+    content_start = None
+    nb_parenthesis = 0
+
+    for i, char in enumerate(txt):
+        if char == "(":
+            nb_parenthesis += 1
+            if content_start is None:
+                content_start = i
+        elif char == ")":
+            nb_parenthesis -= 1
+            if nb_parenthesis == 0:
+                content_end = i
+                break
+    
+    return txt[content_start+1:content_end-1].strip()
+
 
 def _remove_end_punctuation(sentence):
     punctuations = ".?!"

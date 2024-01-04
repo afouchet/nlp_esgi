@@ -34,3 +34,11 @@ def test_parse_presto_labels():
     res = parse_presto_labels(sentence, target)
 
     assert res["labels"] == [0, 0, "note_feature", 0, "content", "content", "content", "content", "content", "content"]
+
+def test_parse_presto_labels__nested_labels():
+    sentence = "Get me the message with the content are you going to yoga class today?."
+    target = "Get_message_content ( message Electronic_message ( content « are you going to yoga class today? » medium « message » ) )"
+
+    res = parse_presto_labels(sentence, target)
+
+    assert res["labels"] == [0, 0, 0, "message__medium", 0, 0, 0, "message__content", "message__content", "message__content", "message__content", "message__content", "message__content", "message__content"]
