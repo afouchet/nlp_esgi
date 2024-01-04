@@ -1,4 +1,5 @@
 def parse_presto_labels(sentence, target):
+    sentence = _remove_end_punctuation(sentence)
     words = sentence.split()
     task = target.split()[0]
 
@@ -46,3 +47,11 @@ def _extract_text_with_labels(target):
         target = target[txt_label_end+1:]
 
     return text_with_label
+
+def _remove_end_punctuation(sentence):
+    punctuations = ".?!"
+
+    if sentence[-1] in punctuations:
+        return sentence[:-1].strip()
+    else:
+        return sentence
