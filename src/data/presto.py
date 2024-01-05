@@ -1,6 +1,5 @@
 def parse_presto_labels(sentence, target):
-    sentence = _remove_end_punctuation(sentence)
-    words = sentence.split()
+    words = _split_sentence_in_words(sentence)
     task = target.split()[0]
 
     text_with_label = _extract_text_with_labels(target)
@@ -21,8 +20,35 @@ def parse_presto_labels(sentence, target):
     return res
 
 
+def _split_sentence_in_words(sentence):
+    words = []
+    special_chars = ".!?':"
+
+    for word in sentence.split():
+        start_words = []
+        end_words = []
+        if len(word) > 1:
+            while word[0] in special_chars:
+                start_words.append(word[0])
+                word = word[1:]
+
+            while word[-1] in special_chars:
+                end_words = [word[-1]] + end_words
+                word = word[:-1]
+
+        if start_words:
+            words += start_words
+
+        words.append(word)
+
+        if end_words:
+            words += end_words
+
+    return words
+
+
 def _find_indexes(txt, words):
-    txt_words = txt.split()
+    txt_words = _split_sentence_in_words(txt)
     nb_words = len(txt_words)
     i_start = next(i for i in range(len(words)) if words[i:i+nb_words] == txt_words)
     return range(i_start, i_start + nb_words)
@@ -35,6 +61,11 @@ def _extract_text_with_labels(target):
     while target:
         txt_label_start = target.find("«")
         txt_label_end = target.find("»")
+
+        if txt_label_start == -1:
+            # No text to label
+            break
+
 
         if "(" in target[:txt_label_start]:
             # There is nested content
@@ -68,26 +99,25 @@ def _extract_text_with_labels(target):
 
 def _find_content_in_parenthesis(txt):
     content_start = None
+    is_in_quote = False
     nb_parenthesis = 0
 
     for i, char in enumerate(txt):
-        if char == "(":
-            nb_parenthesis += 1
-            if content_start is None:
-                content_start = i
-        elif char == ")":
-            nb_parenthesis -= 1
-            if nb_parenthesis == 0:
-                content_end = i
-                break
+        if is_in_quote:
+            if char == "»":
+                is_in_quote = False
+        else:
+            if char == "(":
+                nb_parenthesis += 1
+                if content_start is None:
+                    content_start = i
+            elif char == ")":
+                nb_parenthesis -= 1
+                if nb_parenthesis == 0:
+                    content_end = i
+                    break
+            elif char == "«":
+                is_in_quote = True
+                    
     
     return txt[content_start+1:content_end-1].strip()
-
-
-def _remove_end_punctuation(sentence):
-    punctuations = ".?!"
-
-    if sentence[-1] in punctuations:
-        return sentence[:-1].strip()
-    else:
-        return sentence
