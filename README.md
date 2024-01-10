@@ -112,5 +112,25 @@ Evaluation:
 - Rapport sur les itérations pour le RNN pour named-entity recognition
 - Test du nouveau modèle "Named-entity recognition" sur le jeu de données test des videos youtube.
 
+# NLP TD 4:
+
+Dans ce TD, nous allons coder un assistant virtuel, capable de transformer:
+
+"Ask the python teacher when is the next class?"
+
+en un json:
+
+```
+{
+   "job": "send_message",
+   "receiver": "the python teacher",
+   "content": "when is the next class?",
+}
+```
+
+
+Pour cela, nous allons utiliser [le PRESTO dataset](https://github.com/google-research-datasets/presto). <br/>
+Le bot fonctionnera sur des phrases en anglais (car le dataset contient plus de contenu en anglais).
+
 
 
