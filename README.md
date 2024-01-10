@@ -132,5 +132,28 @@ en un json:
 Pour cela, nous allons utiliser [le PRESTO dataset](https://github.com/google-research-datasets/presto). <br/>
 Le bot fonctionnera sur des phrases en anglais (car le dataset contient plus de contenu en anglais).
 
+## Partie 1: Parser le PRESTO dataset
 
+J'ai créé un fichier de test "tests/data/test_presto.py" avec différents cas de "inputs / targets" extraits du dataset PRESTO. <br/>
+Faites la fonction "parse_presto_labels" qui passe les tests.
+
+Cette fonction doit m'être envoyée avant le 10 janvier 23:59.
+
+## Partie 2: Train NER model
+
+Avec le dataset PRESTO parsé:
+- Filtrer les lignes en "en-US"
+- Dont la tâche est parmi ["Create_note", "Post_message", "Get_message_content"]
+- Avec parse_presto_labels, vous obtenez un dataset (words, label_by_word)
+- Ne gardez que les labels "person", "content" and "note_assignee" (qu'on considérera comme "person")
+- Entraînez un modèle NER reconnaissant les "person" et "content"
+- Faites une post-processing transformant les label_by_words dans un api call
+```
+{
+   "job": "send_message",
+   "receiver": [person in sentence],
+   "content": [content in sentence],
+}
+```
+- Faites une pipeline "sentence" -> api_call
 
