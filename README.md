@@ -157,3 +157,9 @@ Avec le dataset PRESTO parsé:
 ```
 - Faites une pipeline "sentence" -> api_call
 
+## Additional data
+
+Voici un dataset parsé:
+- [train_2.csv](https://drive.google.com/file/d/1-7-esuAMBDzjN2DQsUD9Up7z7bIRwahL/view?usp=drive_link)
+- [dev.csv](https://drive.google.com/file/d/1QEdacac3cTglVvZb7NZKHQ4Bj6U196Vp/view?usp=drive_link)
+- [test.csv](https://drive.google.com/file/d/1gVYmJ4YMn7mtPB8C0YFs3_Qs0-b8c4tc/view?usp=drive_link)
