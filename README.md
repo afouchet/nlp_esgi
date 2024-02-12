@@ -112,5 +112,97 @@ Evaluation:
 - Rapport sur les itérations pour le RNN pour named-entity recognition
 - Test du nouveau modèle "Named-entity recognition" sur le jeu de données test des videos youtube.
 
+# NLP TD 4:
+
+Dans ce TD, nous allons coder un assistant virtuel, capable de transformer:
+
+"Ask the python teacher when is the next class?"
+
+en un json:
+
+```
+{
+   "job": "send_message",
+   "receiver": "the python teacher",
+   "content": "when is the next class?",
+}
+```
 
 
+Pour cela, nous allons utiliser [le PRESTO dataset](https://github.com/google-research-datasets/presto). <br/>
+Le bot fonctionnera sur des phrases en anglais (car le dataset contient plus de contenu en anglais).
+
+## Partie 1: Parser le PRESTO dataset
+
+J'ai créé un fichier de test "tests/data/test_presto.py" avec différents cas de "inputs / targets" extraits du dataset PRESTO. <br/>
+Faites la fonction "parse_presto_labels" qui passe les tests.
+
+Cette fonction doit m'être envoyée avant le 10 janvier 23:59.
+
+## Partie 2: Train NER model
+
+Avec le dataset PRESTO parsé:
+- Filtrer les lignes en "en-US"
+- Dont la tâche est parmi ["Create_note", "Post_message", "Get_message_content"]
+- Avec parse_presto_labels, vous obtenez un dataset (words, label_by_word)
+- Ne gardez que les labels "person", "content" and "note_assignee" (qu'on considérera comme "person")
+- Entraînez un modèle NER reconnaissant les "person" et "content"
+- Faites une post-processing transformant les label_by_words dans un api call
+```
+{
+   "job": "send_message",
+   "receiver": [person in sentence],
+   "content": [content in sentence],
+}
+```
+- Faites une pipeline "sentence" -> api_call
+
+## Additional data
+
+Voici un dataset parsé:
+- [train_2.csv](https://drive.google.com/file/d/1-7-esuAMBDzjN2DQsUD9Up7z7bIRwahL/view?usp=drive_link)
+- [dev.csv](https://drive.google.com/file/d/1QEdacac3cTglVvZb7NZKHQ4Bj6U196Vp/view?usp=drive_link)
+- [test.csv](https://drive.google.com/file/d/1gVYmJ4YMn7mtPB8C0YFs3_Qs0-b8c4tc/view?usp=drive_link)
+
+# TD5: Virtual assistant avec plusieurs fonctionnalités
+
+Nous allons ajouter une nouvelle fonctionnalité à l'assistant développé au TD4. <br/>
+Il pourra:
+- Lire une requête comme "Ask the python teacher where is next class" et envoyer à "the python teacher" le message "where is the next class"
+- Lire une requête comme "What are the pre-requisite for the python class?" et envoyer cette question à un RAG qui y répondra. Nous __n'allons pas__ développer le RAG. L'assitant va juste l'appeler
+
+J'ai fourni des placeholders pour les API (pour l'envoie de message ou pour le RAG).
+
+L'assistant va:
+- Lire le message entrant
+- Déterminer quelle fonctionnalité doit être utilisé
+    - si c'est la fonction "send_message", alors l'assistant doit identifier le "receiver" et le "content", puis appeler api.send_message(receiver, message)
+    - si c'est la fonction "question_rag", alors l'assistant renvoie tout le message dans api.ask_RAG.
+    Par exemple, pour la requête "What are the pre-requisite for the python class?", on appelerait api.ask_RAG(question="What are the pre-requisite for the python class?")
+
+Je fournis [un dataset](https://drive.google.com/file/d/1auSZKs1O66Icn6oYL-8VxDQBJRPqE8is/view?usp=sharing) avec des requêtes et la tâche associée ("send_message" ou "question_rag"). <br/>
+
+## 1.Développer un classifier requête -> tâche
+
+Le dataset est petit, donc on peut pas faire de gros apprentissage. <br/>
+Mais on peut quand même bénéficier de larges réseaux pré-entraînés (qui ont une bonne compréhension du texte) <br/>
+Nous allons prendre Distil-Bert et seulement entraîner les dernières layers (layer_5.output_layer et layer5.ffn, qui sont seulement des feed-forward layers). <br/>
+Si on entraînait les couches précédentes (les attentions layers) qui peuvent modéliser énormément de choses, le modèle sur-appendrait / ne généraliserait pas (aurait 100% de bonnes réponses sur le train et 50% sur le test).
+
+## 2.Créer la pipeline text -> réponse de l'API adéquat
+
+Créer la fonction qui prend du texte en entrée (la demande de l'utilisateur), détermine quelle tâche il faut accomplir, reconnaît dans le texte les arguments pour l'API, call l'API et renvoie à l'utilisateur la réponse de l'API.
+
+En pratique, je veux une fonction
+
+```
+>>> send_virtual_assistant("Ask the python teacher when is the next class")
+
+'Sent to "the python teacher" the message: "when is the next class"'
+
+>>> send_virtual_assistant("What are the pre-requisites for the python class?")
+
+'Asked to RAG: "What are the pre-requisites for the python class?"\nThe RAG replied: "I don\'t know"'
+```
+
+Vous devez me fournir le code et les 2 modèles (text classification & named-entity recognition).
