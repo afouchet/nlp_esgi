@@ -20,31 +20,8 @@ class CustomDataset(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.labels)
 
-
-# Label : 0=rien ; 1=person; 2=content
-def get_label():
-    label_person = ""
-    label_content = ""
-    classifier = pipeline("token-classification", model="foucheta/nlp_esgi_td4_ner")
-    dict_classified = classifier("Write to the friend inviting them to join a fitness class together")
-
-    labels_predicted = [words["entity"] for words in dict_classified]
-    words_predicted = [words["word"] for words in dict_classified]
-    for i, _ in enumerate(words_predicted):
-        if labels_predicted[i] == "LABEL_1":
-            label_person += words_predicted[i] + " "
-        elif labels_predicted[i] == "LABEL_2":
-            label_content += words_predicted[i] + " "
-
-    label_person.strip()
-    label_content.strip()
-    print(label_person)
-    print(label_content)
-
-
-# Quand on reçoit une question pour quelqu'un, il va falloir séparer le content, des personnes, de rien et renvoyer la réponse.
-if __name__ == '__main__':
-    df = read_csv("src/data/raw/question_classif.csv")
+def train_classifier():
+    df = read_csv("data/raw/question_classif.csv")
     msk = np.random.rand(len(df)) <= 0.7
     train = df[msk]
     test = df[~msk]
@@ -73,9 +50,9 @@ if __name__ == '__main__':
         output_dir='./results',
         per_device_train_batch_size=8,
         per_device_eval_batch_size=8,
-        num_train_epochs=3,
+        num_train_epochs=10,
         logging_dir='./logs',
-        max_steps=len(train_dataset) // 8 * 3,
+        max_steps=len(train_dataset) // 8 * 10,
     )
 
     trainer = Trainer(
@@ -86,13 +63,42 @@ if __name__ == '__main__':
         compute_metrics=lambda p: {'accuracy': (p.predictions == p.label_ids).mean()}
     )
     trainer.train()
-
+    model.save_pretrained("./model_directory_TD5")
+    tokenizer.save_pretrained("./model_directory_TD5")
+    """
     inputs = tokenizer(
         "Does the introduction to machine learning course require prior knowledge of advanced mathematics?",
         return_tensors="pt")
     inputs = {key: tensor.to(model.device) for key, tensor in inputs.items()}
     outputs = model(**inputs)
     predictions = torch.argmax(outputs.logits).item()
-
     print(predictions)
+    """
 
+
+# Label : 0=rien ; 1=person; 2=content
+def get_label(sentence):
+    label_person = ""
+    label_content = ""
+    classifier = pipeline("token-classification", model="foucheta/nlp_esgi_td4_ner")
+    dict_classified = classifier(sentence)
+
+    labels_predicted = [words["entity"] for words in dict_classified]
+    words_predicted = [words["word"] for words in dict_classified]
+    for i, _ in enumerate(words_predicted):
+        if labels_predicted[i] == "LABEL_1":
+            label_person += words_predicted[i] + " "
+        elif labels_predicted[i] == "LABEL_2":
+            label_content += words_predicted[i] + " "
+
+    label_person.strip()
+    label_content.strip()
+    # print(label_person)
+    # print(label_content)
+    return label_content, label_person
+
+
+# Quand on reçoit une question pour quelqu'un, il va falloir séparer le content, des personnes, de rien et renvoyer la réponse.
+if __name__ == '__main__':
+    train_classifier()
+    get_label("Write to the friend inviting them to join a fitness class together")
