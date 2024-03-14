@@ -1,15 +1,72 @@
+import json
+import pandas as pd
+from tqdm import tqdm
+
+
+def parse_dataset(dataset_name):
+    """From path to a presto file, return a df with columns:
+    - sentence: sentence in the presto dataset
+    - words: sentence split into words
+    - labels: label for each word
+    - task: the task if this presto line
+
+    Filter rows in English,
+    from tasks create_note, post_message or get_message_content
+    for label "note_assignee", "person" or "content"
+    "note_assignee" is renamed as "person"
+    """
+    df = pd.read_json(f"data/raw/presto/presto_{dataset_name}.jsonl", lines=True)
+
+    df["lang"] = df["metadata"].apply(lambda d: d["locale"])
+    df = df.query("lang == 'en-US'")
+
+    df["job"] = df["targets"].apply(lambda txt: txt.split()[0])
+    sub_df = df[df["job"].isin(["Create_note", "Post_message", "Get_message_content"])]
+    bad_indexes = []
+
+    lines = []
+    for i, row in tqdm(sub_df.iterrows()):
+        try:
+            res = parse_presto_labels(row.inputs, row.targets)
+        except Exception as e:
+            bad_indexes.append(i)
+        else:
+            lines.append(res)
+
+    for line in lines:
+        line["labels"] = clean_labels(line["labels"])
+
+    df = pd.DataFrame(lines)
+
+    df["words"] = df["words"].apply(json.dumps)
+    df["labels"] = df["labels"].apply(json.dumps)
+
+    return df
+
+
+def clean_label(label):
+    if label == 0:
+        return label
+        
+    label = label.split("__")[-1]
+    if label == "note_assignee":
+        label = "person"
+        
+    if label in {"person", "content"}:
+        return label
+    else:
+        return 0
+
+    
+def clean_labels(labels):
+    return [clean_label(lab) for lab in labels]
+
+
 def parse_presto_labels(sentence, target):
     words = _split_sentence_in_words(sentence)
     task = target.split()[0]
 
-    text_with_label = _extract_text_with_labels(target)
-    labels = [0] * len(words)
-
-    for txt, label in text_with_label:
-        indexes = _find_indexes(txt, words)
-        for idx in indexes:
-            labels[idx] = label
-
+    labels = _get_labels(words, target)
     res = {
         "sentence": sentence,
         "words": words,
@@ -46,6 +103,24 @@ def _split_sentence_in_words(sentence):
 
     return words
 
+
+def _get_labels(words, target):
+    text_with_label = _extract_text_with_labels(target)
+
+    labels = _spread_label_in_text(words, text_with_label)
+
+    return labels
+
+
+def _spread_label_in_text(words, text_with_label):
+    labels = [0] * len(words)
+
+    for txt, label in text_with_label:
+        indexes = _find_indexes(txt, words)
+        for idx in indexes:
+            labels[idx] = label
+
+    return labels
 
 def _find_indexes(txt, words):
     txt_words = _split_sentence_in_words(txt)
