@@ -2,14 +2,29 @@ import click
 import numpy as np
 from sklearn.model_selection import cross_val_score
 
+from src.api import api
 from src.data.make_dataset import make_dataset
 from src.features.make_features import make_features
 from src.model.main import make_model
+from src.model import task_identifier, message_sender
 
 @click.group()
 def cli():
     pass
 
+
+@click.command()
+@click.option("--sentence", help="Sentence to send to virtual assistant")
+def send_virtual_assistant(sentence):
+    task = task_identifier.identify_task(sentence)
+
+    if task == "question_rag":
+        print(api.ask_RAG(sentence))
+    elif task == "send_message":
+        print(message_sender.run(sentence))
+    else:
+        raise ValueError(f"Unknown task {task} for sentence {sentence}")
+    
 
 @click.command()
 @click.option("--task", help="Can be is_comic_video, is_name or find_comic_name")
@@ -63,6 +78,7 @@ def evaluate_model(model, X, y):
 cli.add_command(train)
 cli.add_command(test)
 cli.add_command(evaluate)
+cli.add_command(send_virtual_assistant)
 
 
 if __name__ == "__main__":
