@@ -9,3 +9,4 @@ scikit-learn
 click
 nltk
 transformers[torch]
+pytest==8.3.4
