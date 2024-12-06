@@ -109,13 +109,25 @@ en un json:
 Pour cela, nous allons utiliser [le PRESTO dataset](https://github.com/google-research-datasets/presto). <br/>
 Le bot fonctionnera sur des phrases en anglais (car le dataset contient plus de contenu en anglais).
 
-## Partie 1: Parser le PRESTO dataset
+## Parser le PRESTO dataset
 
 J'ai créé un fichier de test "tests/data/test_presto.py" avec différents cas de "inputs / targets" extraits du dataset PRESTO. <br/>
 Faites la fonction "parse_presto_labels" qui passe les tests.
 
 Cette fonction doit m'être envoyée avant le 5 décembre 16:00.
 
-## Partie 2: NER model
 
-Entraîner un Named-Entity Recognition model qui reconnaît, dans du texte en anglais, les mots à labelliser "message" ou "person"
+# NLP TD 5: Prompt Engineering
+
+On revient au problème d'identifier les noms de comiques dans des noms de video France Inter.
+
+On veut développer une prompt pour ChatGPT GPT-4o-mini donnant un ou plusieurs titres de video, et le LLM répondant les noms de comique contenus dans ces titres.
+
+Vous allez expérimenter plusieurs prompts, en intégrant au fur et à mesure les guidelines de (ce site)[https://www.promptingguide.ai/] et (OpenAI)[https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api].
+
+Vous allez aussi essayer des techniques comme Chain-Of-Thought.
+
+Vous allez rendre un rapport avec vos différentes expérimentations. Quelles difficultés rencontrées ? Quelles méthodes ont amélioré l'efficacité de la prompt.
+
+Vous enverrez aussi votre prompt, ainsi que le code pour parser la réponse de ChatGPT et avoir une fonction:
+list(titres de videos) -> list(noms de comiques)
