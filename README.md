@@ -123,7 +123,7 @@ On revient au problème d'identifier les noms de comiques dans des noms de video
 
 On veut développer une prompt pour ChatGPT GPT-4o-mini donnant un ou plusieurs titres de video, et le LLM répondant les noms de comique contenus dans ces titres.
 
-Vous allez expérimenter plusieurs prompts, en intégrant au fur et à mesure les guidelines de (ce site)[https://www.promptingguide.ai/] et (OpenAI)[https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api].
+Vous allez expérimenter plusieurs prompts, en intégrant au fur et à mesure les guidelines de [ce site](https://www.promptingguide.ai/) et [OpenAI](https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api).
 
 Vous allez aussi essayer des techniques comme Chain-Of-Thought.
 
