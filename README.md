@@ -131,3 +131,9 @@ Vous allez rendre un rapport avec vos différentes expérimentations. Quelles di
 
 Vous enverrez aussi votre prompt, ainsi que le code pour parser la réponse de ChatGPT et avoir une fonction:
 list(titres de videos) -> list(noms de comiques)
+
+# NLP TD 6: RAG
+
+Vous allez créer un RAG pour une école d'informatique. </br>
+Le RAG répond aux questions des étudiants sur les cours en se servant des fiches descriptives de chaque cours.
+Tout est dans le notebook notebook/RAG.ipynb
