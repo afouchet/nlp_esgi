@@ -138,7 +138,7 @@ Vous allez créer un RAG pour une école d'informatique. </br>
 Le RAG répond aux questions des étudiants sur les cours en se servant des fiches descriptives de chaque cours. </br>
 Tout est dans le notebook notebook/RAG.ipynb
 
-Voici la (liste de questions)[https://drive.google.com/file/d/14hZ0hTx5dM1WgJYewZsn9BkHzEReq-pj/view?usp=sharing] que je poserai au RAG. </br>
+Voici la [liste de questions](https://drive.google.com/file/d/14hZ0hTx5dM1WgJYewZsn9BkHzEReq-pj/view?usp=sharing) que je poserai au RAG. </br>
 A rendre:
 - Le notebook de votre RAG
 - un CSV avec question,embedding,rag_reply
