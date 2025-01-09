@@ -163,3 +163,5 @@ Par exemple:
 >> parse_message("Ask the python teacher when is the next class")
 {"receiver": "the python teacher", "content": "when is the next class"}
 ```
+
+J'ai ajouté, dans src/models.py, une fonction "predict_at_word_level" permettant d'obtenir, au niveau "mot", les predictions du modèle niveau token.
