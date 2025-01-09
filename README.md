@@ -144,13 +144,7 @@ A rendre:
 - un CSV avec question,embedding,rag_reply
 - un CSV avec chunk,embedding
 
-# NLP TD 7: Virtual assistant [end]
-
-Nous construisons un assistant virtuel pour l'ESGI avec 2 fonctions:
-- envoyer un message "Ask the DevOps teacher when is next class" -> {"job": "send_message", "receiver": "the python teacher", "content": "when is the next class?"}
-- poser une question à un RAG "What do we learn in the project management course" -> use RAG to answer the question
-
-## Part 1: Parser une query pour envoyer un message
+# NLP TD 7: Virtual assistant, suite
 
 Voici [une partie du dataset Presto parsée](https://drive.google.com/file/d/1-7-esuAMBDzjN2DQsUD9Up7z7bIRwahL/view?usp=sharing). Il ne contient des user queries en anglais, qui contiennent des mots labellisés "person" (la personne à qui envoyer) et "content" (le message à envoyer).
 
@@ -164,29 +158,3 @@ Faîtes une pipeline qui, pour une query, repère les tokens "person" et "conten
    "content": {tokens labellisés "content"}, 
 }
 ```
-
-## Part 2: Classify user query
-
-Télécharger [ce dataset](https://docs.google.com/spreadsheets/d/1ryDizBb7QunbWXmCs8MdaZ-GYgd-HO39T8459jB3dE0/edit?usp=sharing) user_query -> service à utiliser.
-
-Fine-tuner un DistilBert de SequenceClassification classifiant les queries entre "question_rag" et "send_message"
-
-Etant donné le peu d'exemples dans le dataset, on ne pourra pas apprendre beaucoup de couches...
-
-Uploader le modèle sur HuggingFace.
-
-## Part 3: Putting it all together!
-
-Renvoyer le code d'un virtual assistant.
-Le virtual_assistant.main(user_query):
-- classifiera la user_query en tant que "question_rag" ou "send_message"
-- si elle est classifiée "question_rag", main renvoie f"asked_to_rag: {user_query}"
-- si elle est classifiée "send_message", main renvoie le json
-```
-{
-   "receiver": {tokens labellisés "person"}, 
-   "content": {tokens labellisés "content"}, 
-}
-```
-
-(ceci, évidemment à l'aide de vos modèles uploadés sur HuggingFace)
