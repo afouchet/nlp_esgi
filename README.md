@@ -151,10 +151,15 @@ Voici [une partie du dataset Presto parsée](https://drive.google.com/file/d/1-7
 Fine-tuner un DistilBert de TokenClassification reconnaîssant les tokens "person" et "content", en utilisant du transfert learning.
 Uploader le modèle sur github.
 
-Faîtes une pipeline qui, pour une query, repère les tokens "person" et "content", et renvoie le json:
+Faîtes une pipeline "parse_message" qui, pour une query, repère les tokens "person" et "content", et renvoie le json:
 ```
 {
    "receiver": {tokens labellisés "person"}, 
    "content": {tokens labellisés "content"}, 
 }
+```
+Par exemple:
+```
+>> parse_message("Ask the python teacher when is the next class")
+{"receiver": "the python teacher", "content": "when is the next class"}
 ```
