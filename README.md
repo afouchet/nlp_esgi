@@ -165,3 +165,32 @@ Par exemple:
 ```
 
 J'ai ajouté, dans src/models.py, une fonction "predict_at_word_level" permettant d'obtenir, au niveau "mot", les predictions du modèle niveau token.
+
+# NLP TD 8: End virtual assistant
+
+## Part 1: Parser une query pour envoyer un message
+
+Télécharger [ce dataset](https://docs.google.com/spreadsheets/d/1ryDizBb7QunbWXmCs8MdaZ-GYgd-HO39T8459jB3dE0/edit?usp=sharing) user_query -> service à utiliser.
+
+Fine-tuner un DistilBert de SequenceClassification classifiant les queries entre "question_rag" et "send_message"
+
+Etant donné le peu d'exemples dans le dataset, on ne pourra pas apprendre beaucoup de couches...
+
+Uploader le modèle sur HuggingFace.
+
+## Part 3: Putting it all together!
+
+Renvoyer le code d'un virtual assistant.
+Le virtual_assistant.main(user_query):
+- classifiera la user_query en tant que "question_rag" ou "send_message"
+- si elle est classifiée "question_rag", main renvoie f"asked_to_rag: {user_query}"
+- si elle est classifiée "send_message", main renvoie le json
+```
+{
+   "receiver": {tokens labellisés "person"}, 
+   "content": {tokens labellisés "content"}, 
+}
+```
+
+(ceci, évidemment à l'aide de vos modèles uploadés sur HuggingFace)
+ 
