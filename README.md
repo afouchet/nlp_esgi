@@ -200,13 +200,13 @@ Le virtual_assistant.main(user_query):
 
 Exemples:
 ```
->> ask_virtual_assistant("Does the React course cover the use of hooks?"
+>> call_virtual_assistant("Does the React course cover the use of hooks?"
 {
     "task": "ask_RAG",
     "reply": "asked_to_rag: Does the React course cover the use of hooks?",
 }
 
->> ask_virtual_assistant("Ask the python teacher when is the next class"
+>> call_virtual_assistant("Ask the python teacher when is the next class"
 {
     "task": "send_message",
     "receiver": "the python teacher",
