@@ -178,19 +178,36 @@ Etant donné le peu d'exemples dans le dataset, on ne pourra pas apprendre beauc
 
 Uploader le modèle sur HuggingFace.
 
-## Part 3: Putting it all together!
+## Part 2: Putting it all together!
 
 Renvoyer le code d'un virtual assistant.
 Le virtual_assistant.main(user_query):
 - classifiera la user_query en tant que "question_rag" ou "send_message"
-- si elle est classifiée "question_rag", main renvoie f"asked_to_rag: {user_query}"
+- si elle est classifiée "question_rag", main renvoie {"task": "ask_RAG", "reply": f"asked_to_rag: {user_query}"}
 - si elle est classifiée "send_message", main renvoie le json
 ```
 {
+   "task": "send_message"
    "receiver": {tokens labellisés "person"}, 
    "content": {tokens labellisés "content"}, 
 }
 ```
 
 (ceci, évidemment à l'aide de vos modèles uploadés sur HuggingFace)
+
+Exemples:
+```
+>> ask_virtual_assistant("Does the React course cover the use of hooks?"
+{
+    "task": "ask_RAG",
+    "reply": "asked_to_rag: Does the React course cover the use of hooks?",
+}
+
+>> ask_virtual_assistant("Ask the python teacher when is the next class"
+{
+    "task": "send_message",
+    "receiver": "the python teacher",
+    "content": "when is the next class",
+}
+```
  
