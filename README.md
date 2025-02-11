@@ -213,3 +213,5 @@ Exemples:
     "content": "when is the next class",
 }
 ```
+
+A rendre: un fichier virtual_assistant.py avec une fonction "call_virtual_assistant(user_query: str) -> dict"
