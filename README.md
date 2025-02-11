@@ -180,6 +180,9 @@ Uploader le modèle sur HuggingFace.
 
 ## Part 2: Putting it all together!
 
+(Si vous n'avez pas le modèle du TD7, vous pouvez utilisez ce modèle HuggingFace: foucheta/nlp_esgi_td4_ner et la fonction "predict_at_word_level" dans src/models.py </br>
+Il s'agît du modèle classifiant "ask the python teacher when is the next class" -> "receiver": "the python teacher", "content": "when is the next class")
+
 Renvoyer le code d'un virtual assistant.
 Le virtual_assistant.main(user_query):
 - classifiera la user_query en tant que "question_rag" ou "send_message"
@@ -210,4 +213,3 @@ Exemples:
     "content": "when is the next class",
 }
 ```
- 
