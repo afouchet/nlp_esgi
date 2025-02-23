@@ -2,13 +2,7 @@
 
 L'objectif de ce TD est de créer un modèle "nom de vidéo" -> "is_comic" (is_comic vaut 1 si c'est une chronique humouristique, 0 sinon).
 
-Dans ce TD, on s'intéresse surtout à la démarche. Pour chaque tâche:
-- Bien poser le problème
-- Avoir une baseline
-- Experimenter diverses features et modèles
-- Garder une trace écrite des expérimentations dans un rapport. Dans le rapport, on s'intéresse plus au sens du travail effectué (quelles expérimentations ont été faites, pourquoi, quelles conclusions) qu'à la liste de chiffres.
-- Avoir une codebase clean, permettant de reproduire les expérimentations.
-
+Il s'agît d'un problème d'apprentissage supervisé classique, à ceci près qu'on doit extraire les features du texte. <br/>
 On se contentera de méthodes pré-réseaux de neurones. Nos features sont explicables et calculables "à la main".
 
 La codebase doit fournir les entry points suivant:
@@ -32,9 +26,7 @@ Dans [ce lien](https://docs.google.com/spreadsheets/d/1HBs08WE5DLcHEfS6MqTivbyYl
 - video_name: le nom de la video
 - is_comic: est-ce une chronique humoristique
 
-## Partie 1: Text classification: prédire si la vidéo est une chronique comique
-
-### Tasks
+## Text classification: prédire si la vidéo est une chronique comique
 
 - Créer une pipeline train, qui:
   - load le CSV
@@ -47,7 +39,11 @@ Dans [ce lien](https://docs.google.com/spreadsheets/d/1HBs08WE5DLcHEfS6MqTivbyYl
   <br\>(comment cette partie one-hot encode les mots ? ERREUR à éviter: l'encoding en "predict" ne pointe pas les mots vers les mêmes index. Par exemple, en train, un nom de video avec le mot chronique aurait 1 dans la colonne \#10, mais en predict, il aurait 1 dans la colonne \#23)
 - (optionel mais recommandé: créer une pipeline "evaluate" qui fait la cross-validation du modèle pour connaître ses performances)
 - Transformer les noms de video avec différentes opérations de NLTK (Stemming, remove stop words) ou de CountVectorizer (min / max document frequency)
-- Envoyer ce code (à la fin du cour)
 - Itérer avec les différentes features / différents modèles pour trouver le plus performant
-- Faire un rapport avec les différentes itérations faites, et les conclusions
-- Envoyer le rapport et le code entraînant le meilleur modèle
+
+## A Rendre
+
+Envoyez le code à foucheta@gmail.com. <br/>
+Le mail aura comme object [ESGI][NLP] TD1. <br/>
+Si vous avez fait le TD en groupe de 2, ajoutez l'autre membre dans le CC du mail.
+
