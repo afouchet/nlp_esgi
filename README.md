@@ -14,7 +14,7 @@ python src/main.py train --input_filename=data/raw/train.csv --model_dump_filena
 ```
 python src/main.py predict --input_filename=data/raw/test.csv --model_dump_filename=models/model.json --output_filename=data/processed/prediction.csv
 ```
-- Un entry point pour evaluer un modèle, prenant en entrée le path aux données de train.
+- [Optionel mais recommandé] Un entry point pour evaluer un modèle, prenant en entrée le path aux données de train.
 ```
 python src/main.py evaluate --input_filename=data/raw/train.csv
 ```
