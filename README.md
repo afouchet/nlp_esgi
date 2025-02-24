@@ -81,6 +81,7 @@ Vous devez avoir un modèle avec 98%+ d'accuracy.
 
 
 Trouver [sur ce lien](https://drive.google.com/file/d/1ZEuK3JYIgXhG90rKUyq2rLAZW4VexD5J/view?usp=drive_link) un dataset avec les noms de video, et le label pour chaque token. <br/>
+Les données MultiNerd sont disponibles [sur ce lien](https://github.com/Babelscape/multinerd). <br/>
 (Remarque: le modèle peut être entraîné sur MultiNERD, puis le dataset France Inter).
 
 ## A Rendre
