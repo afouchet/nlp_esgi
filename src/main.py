@@ -1,5 +1,8 @@
 import click
 import joblib
+import numpy as np
+from sklearn.metrics import log_loss
+from sklearn.model_selection import cross_validate
 
 from data import make_dataset
 from feature import make_features
@@ -29,7 +32,14 @@ def train(input_filename, model_dump_filename):
 @click.option("--output_filename", default="data/processed/prediction.csv", help="Output file for predictions")
 def predict(input_filename, model_dump_filename, output_filename):
     model = joblib.load(model_dump_filename)
-    pass
+
+    df = make_dataset(input_filename)
+    X, y = make_features(df)
+
+    predictions = model.predict(X)
+
+    print("Got accuracy", (y == predictions).mean() * 100)
+    print("Got log loss", log_loss(y, predictions))
 
 
 @click.command()
@@ -50,7 +60,18 @@ def evaluate(input_filename):
 
 def evaluate_model(model, X, y):
     # Run k-fold cross validation. Print results
-    pass
+    scoring = ['neg_log_loss', 'accuracy']
+    cv_results = cross_validate(
+        model, X, y, scoring=scoring, cv=5, return_train_score=True,
+        verbose=1, n_jobs=-1,
+    )
+
+    print(
+        f"Log loss {np.mean(cv_results['test_neg_log_loss']):.5f} +/- {np.std(cv_results['test_neg_log_loss']):.5f}"
+    )
+    print(
+        f"accuracy {np.mean(cv_results['test_accuracy']):.5f} +/- {np.std(cv_results['test_accuracy']):.5f}"
+    )
 
 
 cli.add_command(train)
