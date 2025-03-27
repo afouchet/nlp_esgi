@@ -91,3 +91,18 @@ Avec un modèle:
 - titre de video -> nom de personne dans le titre
 
 Faire une pipeline [titres de video] -> [(nom de comiques, liste des videos où il apparaît)]
+
+# NLP TD 3: Prompt Engineering
+
+On revient au problème d'identifier les noms de comiques dans des noms de video France Inter.
+
+On veut développer une prompt pour ChatGPT GPT-4o-mini donnant un ou plusieurs titres de video, et le LLM répondant les noms de comique contenus dans ces titres.
+
+Vous allez expérimenter plusieurs prompts, en intégrant au fur et à mesure les guidelines de [ce site](https://www.promptingguide.ai/) et [OpenAI](https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api).
+
+Vous allez aussi essayer des techniques comme Chain-Of-Thought.
+
+Vous allez rendre un rapport avec vos différentes expérimentations. Quelles difficultés rencontrées ? Quelles méthodes ont amélioré l'efficacité de la prompt.
+
+Vous enverrez aussi votre prompt, ainsi que le code pour parser la réponse de ChatGPT et avoir une fonction:
+list(titres de videos) -> list(noms de comiques)
