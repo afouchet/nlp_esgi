@@ -118,3 +118,28 @@ A rendre:
 - Le notebook de votre RAG
 - un CSV avec question,embedding,rag_reply
 - un CSV avec chunk,embedding
+
+# NLP TD 5-6:
+
+Dans ce TD, nous allons coder un assistant virtuel, capable de transformer:
+
+"Ask the python teacher when is the next class?"
+
+en un json:
+
+```
+
+   "job": "send_message",
+   "receiver": "the python teacher",
+   "content": "when is the next class?",
+}
+```
+
+
+Pour cela, nous allons utiliser [le PRESTO dataset](https://github.com/google-research-datasets/presto). <br/>
+Le bot fonctionnera sur des phrases en anglais (car le dataset contient plus de contenu en anglais).
+
+## TD5: Parser le PRESTO dataset
+
+J'ai créé un fichier de test "tests/data/test_presto.py" avec différents cas de "inputs / targets" extraits du dataset PRESTO. <br/>
+Faites la fonction "parse_presto_labels" qui passe les tests.
