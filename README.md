@@ -139,7 +139,29 @@ en un json:
 Pour cela, nous allons utiliser [le PRESTO dataset](https://github.com/google-research-datasets/presto). <br/>
 Le bot fonctionnera sur des phrases en anglais (car le dataset contient plus de contenu en anglais).
 
-## TD5: Parser le PRESTO dataset
+## TD 5: Parser le PRESTO dataset
 
 J'ai créé un fichier de test "tests/data/test_presto.py" avec différents cas de "inputs / targets" extraits du dataset PRESTO. <br/>
 Faites la fonction "parse_presto_labels" qui passe les tests.
+
+## TD 6: Virtual assistant, suite
+
+Voici [une partie du dataset Presto parsée](https://drive.google.com/file/d/1-7-esuAMBDzjN2DQsUD9Up7z7bIRwahL/view?usp=sharing). Il ne contient des user queries en anglais, qui contiennent des mots labellisés "person" (la personne à qui envoyer) et "content" (le message à envoyer).
+
+Fine-tuner un DistilBert de TokenClassification reconnaîssant les tokens "person" et "content", en utilisant du transfert learning.
+Uploader le modèle sur HuggingFace.
+
+Faîtes une pipeline "parse_message" qui, pour une query, repère les tokens "person" et "content", et renvoie le json:
+```
+{
+   "receiver": {tokens labellisés "person"}, 
+   "content": {tokens labellisés "content"}, 
+}
+```
+Par exemple:
+```
+>> parse_message("Ask the python teacher when is the next class")
+{"receiver": "the python teacher", "content": "when is the next class"}
+```
+
+J'ai ajouté, dans src/models.py, une fonction "predict_at_word_level" permettant d'obtenir, au niveau "mot", les predictions du modèle niveau token.
