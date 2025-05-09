@@ -1,25 +1,41 @@
 from pathlib import Path
 import mlflow
 import numpy as np
+import os
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from tqdm import tqdm
 from time import sleep
+import yaml
 
 from src_rag import models
 
-mlflow.set_experiment("RAG_Movies")
+CONF = yaml.safe_load(open("config.yml"))
 
-folder = Path("data") / "raw" / "movies" / "wiki"
+FOLDER = Path("data") / "raw" / "movies" / "wiki"
 FILENAMES = [
-    folder / title for title in ["Inception.md", "The Dark Knight.md", "Deadpool.md", "Fight Club.md", "Pulp Fiction.md"]
+    FOLDER / title for title in ["Inception.md", "The Dark Knight.md", "Deadpool.md", "Fight Club.md", "Pulp Fiction.md"]
 ]
 DF = pd.read_csv("data/raw/movies/questions.csv", sep=";") 
 
 ENCODER = SentenceTransformer('all-MiniLM-L6-v2')
 
+def _load_ml_flow(conf):
+    """
+    # Uncomment to run on databricks
+    os.environ["DATABRICKS_HOST"] = conf["databricks_url"]
+    os.environ["DATABRICKS_TOKEN"] = conf["databricks_key"]
 
+    mlflow.set_tracking_uri("databricks")
+    mlflow.set_experiment(conf["mlflow_experiment"])
+
+    """
+    # Uncomment to run locally
+    mlflow.set_experiment("RAG_Movies")
+
+
+_load_ml_flow(CONF)
 
 def run_evaluate_retrieval(config, rag=None):
     rag = rag or models.get_model(config)
@@ -45,7 +61,12 @@ def _push_mlflow_result(score, config):
         df = score.pop("df_result")
         mlflow.log_table(df, artifact_file="df.json")
         mlflow.log_metrics(score)
-        mlflow.log_dict(config, "config.json")
+
+        config_no_key = {
+            key: val for key, val in config.items() if not key.endswith("_key")
+        }
+
+        mlflow.log_dict(config_no_key, "config.json")
 
 
 def evaluate_reply(rag, df):
