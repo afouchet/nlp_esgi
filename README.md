@@ -215,3 +215,37 @@ Exemples:
 ```
 
 A rendre: un fichier virtual_assistant.py avec une fonction "call_virtual_assistant(user_query: str) -> dict"
+
+## TD 8: Travail collectif: RAG sur les films
+
+Nous allons développer un nouveau RAG, qui répondra aux questions sur les films. <br/>
+Je fournis:
+- un zip avec les pages wikipedia de divers films.
+- un dataframe avec un set de question - text à trouver dans les sources - réponse attendue
+- le code src_rag/ avec un modèle de RAG et un script evaluate.py qui évalue le RAG et pousse les résultats sur mlflow
+- un dashboard databricks avec le résultat des experimentations ML-Flow
+- un board Trello avec toutes les idées pour améliorer le RAG
+
+L'idée est de se répartir les "idées d'amélioration". <br/>
+Lorsqu'un groupe a amélioré le RAG, il peut en informer les autres qui intègrent son travail. <br/>
+On cherchera à avoir le meilleur MRR sur ce sujet.
+
+A faire:
+- Changer config.yml.example en config.yml. Y ajouter une api_key Groq pour pouvoir générer le texte
+- Run the code
+```
+from src_rag import evaluate
+evaluate.run_evaluate_retrieval(config={})
+```
+Ceci doit marcher et vous pousser une expérimentation ML-Flow locale
+- Changer la fonction "_load_ml_flow(conf)"
+```
+def _load_ml_flow(conf):
+    os.environ["DATABRICKS_HOST"] = conf["databricks_url"]
+    os.environ["DATABRICKS_TOKEN"] = conf["databricks_key"]
+
+    mlflow.set_tracking_uri("databricks")
+    mlflow.set_experiment(conf["mlflow_experiment"])
+```
+Pour pousser vos expérimentations sur le databricks
+
