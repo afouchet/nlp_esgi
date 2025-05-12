@@ -22,16 +22,7 @@ DF = pd.read_csv("data/raw/movies/questions.csv", sep=";")
 ENCODER = SentenceTransformer('all-MiniLM-L6-v2')
 
 def _load_ml_flow(conf):
-    """
-    # Uncomment to run on databricks
-    os.environ["DATABRICKS_HOST"] = conf["databricks_url"]
-    os.environ["DATABRICKS_TOKEN"] = conf["databricks_key"]
-
-    mlflow.set_tracking_uri("databricks")
-    mlflow.set_experiment(conf["mlflow_experiment"])
-
-    """
-    # Uncomment to run locally
+    mlflow.set_tracking_uri("http://10.33.0.253:5000")
     mlflow.set_experiment("RAG_Movies")
 
 
