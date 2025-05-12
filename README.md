@@ -220,11 +220,11 @@ A rendre: un fichier virtual_assistant.py avec une fonction "call_virtual_assist
 
 Nous allons développer un nouveau RAG, qui répondra aux questions sur les films. <br/>
 Je fournis:
-- un zip avec les pages wikipedia de divers films.
+- un [fichier zip](https://drive.google.com/file/d/19udLiCp6HdEEzsq_NQBeImXSmoBKTBov/view?usp=sharing) avec les pages wikipedia de divers films.
 - un dataframe avec un set de question - text à trouver dans les sources - réponse attendue
 - le code src_rag/ avec un modèle de RAG et un script evaluate.py qui évalue le RAG et pousse les résultats sur mlflow
-- un dashboard databricks avec le résultat des experimentations ML-Flow
-- un board Trello avec toutes les idées pour améliorer le RAG
+- un [dashboard databricks](https://dbc-264ce65d-5aec.cloud.databricks.com/ml/experiments/1145748448592611?o=1111593904032546&searchFilter=&orderByKey=attributes.start_time&orderByAsc=false&startTime=ALL&lifecycleFilter=Active&modelVersionFilter=All+Runs&datasetsFilter=W10%3D) avec le résultat des experimentations ML-Flow
+- un [board Trello](https://trello.com/b/8hT0M8L8/esgi-iabd-jan-rag-movies) avec toutes les idées pour améliorer le RAG
 
 L'idée est de se répartir les "idées d'amélioration". <br/>
 Lorsqu'un groupe a amélioré le RAG, il peut en informer les autres qui intègrent son travail. <br/>
