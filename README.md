@@ -223,7 +223,7 @@ Je fournis:
 - un [fichier zip](https://drive.google.com/file/d/19udLiCp6HdEEzsq_NQBeImXSmoBKTBov/view?usp=sharing) avec les pages wikipedia de divers films.
 - un dataframe avec un set de question - text à trouver dans les sources - réponse attendue
 - le code src_rag/ avec un modèle de RAG et un script evaluate.py qui évalue le RAG et pousse les résultats sur mlflow
-- un [dashboard databricks](https://dbc-264ce65d-5aec.cloud.databricks.com/ml/experiments/1145748448592611?o=1111593904032546&searchFilter=&orderByKey=attributes.start_time&orderByAsc=false&startTime=ALL&lifecycleFilter=Active&modelVersionFilter=All+Runs&datasetsFilter=W10%3D) avec le résultat des experimentations ML-Flow
+- un [dashboard databricks](https://dbc-264ce65d-5aec.cloud.databricks.com/ml/experiments/1145748448592611?viewStateShareKey=798eb27a57612968762ab3b78541252abaf2a8a5576f027a77db23833b574b94&compareRunsMode=TABLE&o=1111593904032546) avec le résultat des experimentations ML-Flow
 - un [board Trello](https://trello.com/b/8hT0M8L8/esgi-iabd-jan-rag-movies) avec toutes les idées pour améliorer le RAG
 
 L'idée est de se répartir les "idées d'amélioration". <br/>
