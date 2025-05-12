@@ -1,0 +1,6 @@
+databricks_key: YOUR-DATABRICKS-KEY
+databricks_url: https://dbc-264ce65d-5aec.cloud.databricks.com
+
+groq_key: YOUR-GROQ-KEY
+
+mlflow_experiment: "/RAG_Movies"
