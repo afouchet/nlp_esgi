@@ -50,14 +50,14 @@ def run_evaluate_reply(config, rag=None):
 def _push_mlflow_result(score, config):
     with mlflow.start_run():
         df = score.pop("df_result")
-        mlflow.log_table(df, artifact_file="df.json")
+        # mlflow.log_table(df, artifact_file="df.json")
         mlflow.log_metrics(score)
 
-        config_no_key = {
-            key: val for key, val in config.items() if not key.endswith("_key")
-        }
+        # config_no_key = {
+        #     key: val for key, val in config.items() if not key.endswith("_key")
+        # }
 
-        mlflow.log_dict(config_no_key, "config.json")
+        # mlflow.log_dict(config_no_key, "config.json")
 
 
 def evaluate_reply(rag, df):
