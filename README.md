@@ -249,3 +249,35 @@ def _load_ml_flow(conf):
 ```
 Pour pousser vos expérimentations sur le databricks
 
+## TD 9: Travail collectif: Agents
+
+On va étendre le RAG fait au TD précédent en y ajoutant un agent capable de faire des requêtes SQL. <br/>
+Je fournis un CSV avec des informations sur les films: réalisateurs, acteurs, genre, **note moyenne**. <br/>
+
+Vous allez utiliser un LLM pour pouvoir traduire des questions d'utilisateur en requête SQL, puis vous servir du résultat de la requête pour envoyer une réponse en langage naturel.
+
+Aide: une fois que vous avez extrait la requête SQL de la réponse du LLM, vous pouvez l'exécuter sur le CSV en utilsant polar
+
+```python
+import polars
+
+ctx = polars.SQLContext(MOVIES=df)
+
+ctx.execute("""
+SELECT title, director, vote_average
+  FROM MOVIES
+  WHERE genres LIKE \'%Animation%\'
+  AND vote_average >= 7.5
+  ORDER BY vote_average DESC
+  LIMIT 10;""", eager=True).to_pandas()
+```
+
+Votre bot doit pouvoir répondre aux questions suivantes:
+- "Quels sont les 3 films les mieux notés dans le genre action ?"
+- "Dans quels films Leonardo DiCaprio a-t-il joué ?"
+- "Quel film réalisé par Michael Bay a la meilleure note ?"
+- "Lister tous les thrillers réalisés par Quentin Tarantino, triés par date de sortie."
+- "Trouver tous les films qui présentent à la fois Léonardo DirCaprio et Brad Pit dans le casting."  (fautes d'orthographe)
+- "J'aime les films d'action avec un retournement de situation. Pourriez-vous me recommander quelque chose ?" (Dans l'idée, l'IA liste des films avec la requête SQL, cherche avec RAG s'il y a retournement de situation, puis refiltre)
+
+Je vais vous fournir un csv "question,expected_reply"
