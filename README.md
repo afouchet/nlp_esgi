@@ -253,7 +253,7 @@ Pour pousser vos expérimentations sur le databricks
 
 On va étendre le RAG fait au TD précédent en y ajoutant un agent capable de faire des requêtes SQL. <br/>
 Je fournis [un CSV](https://docs.google.com/spreadsheets/d/1VFJeNt0Z0ZGhBT1bS7idUC4mwc-SBoXQ/edit?usp=sharing&ouid=105481616530780956748&rtpof=true&sd=true) avec des informations sur les films: réalisateurs, acteurs, genre, **note moyenne**. <br/>
-Je fournis [un zip](https://drive.google.com/file/d/1dKAVimkciabC2cl0J1kCwKuOOcEIoCJI/view?usp=sharing) avec la fiche wikipedia, en markdown, des films notés dans le CSV.
+Je fournis [une archive tar.gz](https://drive.google.com/file/d/1UOcWA7m7-wYHsqGRfMe5DDI9t3pEFJKS/view?usp=sharing) avec la fiche wikipedia, en markdown, des films notés dans le CSV.
 
 Vous allez utiliser un LLM pour pouvoir traduire des questions d'utilisateur en requête SQL, puis vous servir du résultat de la requête pour envoyer une réponse en langage naturel.
 
