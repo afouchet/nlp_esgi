@@ -252,7 +252,8 @@ Pour pousser vos expérimentations sur le databricks
 ## TD 9: Travail collectif: Agents
 
 On va étendre le RAG fait au TD précédent en y ajoutant un agent capable de faire des requêtes SQL. <br/>
-Je fournis un CSV avec des informations sur les films: réalisateurs, acteurs, genre, **note moyenne**. <br/>
+Je fournis (un CSV)[https://drive.google.com/file/d/1pb2TONwr-GdqiH32btOhjBxRl6hAGOxM/view?usp=sharing] avec des informations sur les films: réalisateurs, acteurs, genre, **note moyenne**. <br/>
+Je fournis (un zip)[https://drive.google.com/file/d/1dKAVimkciabC2cl0J1kCwKuOOcEIoCJI/view?usp=sharing] avec la fiche wikipedia, en markdown, des films notés dans le CSV.
 
 Vous allez utiliser un LLM pour pouvoir traduire des questions d'utilisateur en requête SQL, puis vous servir du résultat de la requête pour envoyer une réponse en langage naturel.
 
@@ -279,5 +280,3 @@ Votre bot doit pouvoir répondre aux questions suivantes:
 - "Lister tous les thrillers réalisés par Quentin Tarantino, triés par date de sortie."
 - "Trouver tous les films qui présentent à la fois Léonardo DirCaprio et Brad Pit dans le casting."  (fautes d'orthographe)
 - "J'aime les films d'action avec un retournement de situation. Pourriez-vous me recommander quelque chose ?" (Dans l'idée, l'IA liste des films avec la requête SQL, cherche avec RAG s'il y a retournement de situation, puis refiltre)
-
-Je vais vous fournir un csv "question,expected_reply"
