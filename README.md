@@ -279,4 +279,5 @@ Votre bot doit pouvoir répondre aux questions suivantes:
 - "Quel film réalisé par Michael Bay a la meilleure note ?"
 - "Lister tous les thrillers réalisés par Quentin Tarantino, triés par date de sortie."
 - "Trouver tous les films qui présentent à la fois Léonardo DirCaprio et Brad Pit dans le casting."  (fautes d'orthographe)
+- "Quels sont les 3 meilleurs films d'action futuristes ?"
 - "J'aime les films d'action avec un retournement de situation. Pourriez-vous me recommander quelque chose ?" (Dans l'idée, l'IA liste des films avec la requête SQL, cherche avec RAG s'il y a retournement de situation, puis refiltre)
