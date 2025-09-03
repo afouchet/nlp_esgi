@@ -140,7 +140,7 @@ Le notebook TD2_transfer_leaning fonctionne sur votre ordinateur
 ## Après 1 heure
 
 Vous avez entraîné un modèle français prédisant si un mot est un nom de personnes avec une accuracy > 98.5%+ en test<br/>
-**-1 point si non fait après 30 minutes**
+**-1 point si non fait après 1 heure**
 
 ## A Rendre
 
