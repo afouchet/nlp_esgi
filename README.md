@@ -86,6 +86,24 @@ Si vous avez fait le TD en groupe de 2, ajoutez l'autre membre dans le CC du mai
 
 # NLP TD 2: Transfer learning for named-entity recognition
 
+## Installation
+
+### Utilisateurs de Git
+
+```bash
+git pull
+uv sync
+```
+
+### Autres
+
+Télécharger le nouveau pyproject.toml et notebook/TD2.ipynb
+puis
+```bash
+uv sync
+```
+**M'appeler si "uv sync" ne marche pas**
+
 ## Part 1: Named-entity recognition
 
 Dans ce TD, on va fine-tune un modèle BERT pour identifier des noms de personnes dans du texte en français. <br/>
@@ -129,6 +147,14 @@ Avec un modèle:
 
 Faire une pipeline [titres de video] -> [(nom de comiques, liste des videos où il apparaît)]
 
+## TODO
+
+1. Run le notebook sur multiNERD en anglais
+2. Prendre un modèle CamemBERT et run sur multiNERD en français. Avoir 99%+ accuracy
+3. Faire fonction predict at word level
+4. Prédire sur le dataset France Inter
+5. Uploader votre modèle sur HuggingFace
+
 ## !! Timeline !! (**Points en moins si non respectée**)
 
 ### Après 30 minutes
@@ -146,4 +172,5 @@ Vous avez entraîné un modèle français prédisant si un mot est un nom de per
 
 - Votre fonction predict(texts_split_into_words: list[list[str]]) -> list[list[int]]
 - Vos prediction sur le jeu de données France Inter
+- Le nom de votre modèle sur HuggingFace
 
