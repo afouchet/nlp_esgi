@@ -114,6 +114,8 @@ uv sync
 ```
 **M'appeler si "uv sync" ne marche pas**
 
+**Si l'installation est très difficile, faire le TD sur Google Colab**
+
 ## Part 1: Named-entity recognition
 
 Dans ce TD, on va fine-tune un modèle BERT pour identifier des noms de personnes dans du texte en français. <br/>
