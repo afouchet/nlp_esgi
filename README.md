@@ -405,3 +405,48 @@ Ceci doit marcher et vous pousser une expérimentation ML-Flow locale
 - Pour votre groupe, ayez votre clone github du cours, ou vous pourrez pousser de nouvelles features
 
 Changer la taille des chunks, overlap, small2Big, embedding de sorte à avoir le meilleur MRR / reply accuracy
+
+## TD 6: Agents
+
+On va étendre le RAG fait au TD précédent en y ajoutant un agent capable de faire des requêtes SQL. <br/>
+Je fournis [un CSV](https://docs.google.com/spreadsheets/d/1VFJeNt0Z0ZGhBT1bS7idUC4mwc-SBoXQ/edit?usp=sharing&ouid=105481616530780956748&rtpof=true&sd=true) avec des informations sur les films: réalisateurs, acteurs, genre, **note moyenne**. <br/>
+Je fournis [une archive tar.gz](https://drive.google.com/file/d/1UOcWA7m7-wYHsqGRfMe5DDI9t3pEFJKS/view?usp=sharing) avec la fiche wikipedia, en markdown, des films notés dans le CSV.
+
+Vous allez utiliser un LLM pour pouvoir traduire des questions d'utilisateur en requête SQL, puis vous servir du résultat de la requête pour envoyer une réponse en langage naturel.
+
+Aide: une fois que vous avez extrait la requête SQL de la réponse du LLM, vous pouvez l'exécuter sur le CSV en utilsant polar
+
+```python
+import polars
+
+ctx = polars.SQLContext(MOVIES=df)
+
+ctx.execute("""
+SELECT title, director, vote_average
+  FROM MOVIES
+  WHERE genres LIKE \'%Animation%\'
+  AND vote_average >= 7.5
+  ORDER BY vote_average DESC
+  LIMIT 10;""", eager=True).to_pandas()
+```
+
+Votre bot doit pouvoir répondre aux questions suivantes:
+- Agent SQL
+  - "Quels sont les 3 films les mieux notés dans le genre action ?"
+  - "Dans quels films Leonardo DiCaprio a-t-il joué ?"
+  - "Quel film réalisé par Michael Bay a la meilleure note ?"
+  - "Lister tous les thrillers réalisés par Quentin Tarantino, triés par date de sortie."
+  - "Trouver tous les films qui présentent à la fois Léonardo DirCaprio et Brad Pit dans le casting."  (fautes d'orthographe)
+- Agent multi-outils, pouvant faire requête SQL et RAG
+  - "Quel est le scenario de Pulp Fiction
+
+- Agent ReAct. Vous pouvez vous inspirer du [notebook agent ReAct](https://github.com/neural-maze/agentic-patterns-course/blob/main/notebooks/planning_pattern.ipynb). Dans l'idée, l'IA peut faire des requêtes SQL, chercher des infos avec le RAG, et elle organise son travail.
+  - "Quels sont les 3 meilleurs films d'action futuristes ?"
+  - "J'aime les films d'action avec un retournement de situation. Pourriez-vous me recommander quelque chose ?"
+
+Pour l'agent ReAct, vous ne pouvez pas utiliser des toolbox (LangChain, HayStack). Je souhaite que vous implémentiez vous-même le pattern.
+
+### A remettre
+
+- CSV agent_replies.csv avec colonnes question, reply. Les questions sont celles mentionnées juste au dessus
+- Le code de votre agent.
