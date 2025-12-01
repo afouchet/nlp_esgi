@@ -17,14 +17,20 @@ CONF = yaml.safe_load(open("config.yml"))
 
 FOLDER = Path("data") / "raw" / "movies" / "wiki"
 FILENAMES = [
-    FOLDER / title for title in ["Inception.md", "The Dark Knight.md", "Deadpool.md", "Fight Club.md", "Pulp Fiction.md"]
+    FOLDER / title for title in ["Inception.md", "The Dark Knight.md", "Deadpool.md", "Fight Club.md", "Pulp Fiction.md", "Titanic.md", "Avengers: Infinity War.md", "Seven Samurai.md"]
 ]
 DF = pd.read_csv("data/raw/movies/questions.csv", sep=";") 
 
 ENCODER = SentenceTransformer('all-MiniLM-L6-v2')
+# ENCODER = FlagModel(
+#     'BAAI/bge-base-en-v1.5',
+#     query_instruction_for_retrieval="Represent this sentence for searching relevant passages:",
+#     use_fp16=True,
+# )
 
 
 def _load_ml_flow(conf):
+    # mlflow.set_tracking_uri("http://10.33.0.253:5000")
     mlflow.set_experiment("RAG_Movies_clean")
 
 
@@ -153,7 +159,13 @@ def calc_semantic_similarity(generated_answer: str, reference_answer: str) -> fl
 
 
 if __name__ == "__main__":
-    model_config = {"chunk_size": 512}
-    # run_evaluate_retrieval({"model": model_config})
+    # model_config = {"chunk_size": 256, "overlap": 48}
+    model_config = {
+        "question_encoding": models.QuestionEncoding.REGULAR,
+        "metadata_added": models.MetadataAdded.TITLE_AND_SECTION,
+        "chunk_size": 512,
+        "overlap": 48,
+    }
     run_evaluate_reply({"model": model_config})
+    # run_evaluate_retrieval({"model": model_config})
 
