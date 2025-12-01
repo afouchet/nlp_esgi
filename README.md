@@ -403,7 +403,7 @@ A rendre:
 - Code dans src_rag/
 - Rapport sur les différentes méthodes utilisées, leurs performances (MRR, reply similarity)
 
-## TD 6: Agents
+## TD 7: Agents
 
 On va étendre le RAG fait au TD précédent en y ajoutant un agent capable de faire des requêtes SQL. <br/>
 Je fournis [un CSV](https://docs.google.com/spreadsheets/d/1VFJeNt0Z0ZGhBT1bS7idUC4mwc-SBoXQ/edit?usp=sharing&ouid=105481616530780956748&rtpof=true&sd=true) avec des informations sur les films: réalisateurs, acteurs, genre, **note moyenne**. <br/>
