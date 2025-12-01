@@ -406,7 +406,7 @@ Ceci doit marcher et vous pousser une expérimentation ML-Flow locale
 
 Changer la taille des chunks, overlap, small2Big, embedding de sorte à avoir le meilleur MRR / reply accuracy
 
-## TD 6: Agents
+## TD 7: Agents
 
 On va étendre le RAG fait au TD précédent en y ajoutant un agent capable de faire des requêtes SQL. <br/>
 Je fournis [un CSV](https://docs.google.com/spreadsheets/d/1VFJeNt0Z0ZGhBT1bS7idUC4mwc-SBoXQ/edit?usp=sharing&ouid=105481616530780956748&rtpof=true&sd=true) avec des informations sur les films: réalisateurs, acteurs, genre, **note moyenne**. <br/>
