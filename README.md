@@ -125,8 +125,9 @@ Dans le notebooks/TD2_transfer_learning.ipynb, vous trouverez le code pour:
 - Extraire d'un fichier MultiNERD English une serie de phrase, dont les mots sont labelisés 1 si le mot est un nom de personne, 0 sinon.
 - Fine-tune le modèle DistilBert en gelant la 1ère couche.
 
-Après avoir vérifié que ça marche, vous devez:
-- Adapter ce code en français (données MultiNERD FR, modèle CamemBERT ou autre)
+A faire:
+- Faire tourner le notebook sur le MultiNERD EN, avec le modèle DistilBERT, vérifier que ça marche
+- Adapter ce code en français (données MultiNERD FR, modèle CamemBERT ou autre). Si vous avez de mauvaises performances (< 98.5%) il y a des éléments à modifier.
 - Créer une fonction (text_split_in_words, model, tokenizer) -> labels <br/>
 text_split_in_words est la liste des mots d'un texte. <br/>
 Par exemple, la video_name "Bonjour class d'ESGI" sera le text_split_in_words: ["Bonjour", "class", "d'", "ESGI"]
@@ -150,14 +151,6 @@ Vous devriez atteindre 98.5%+ d'accuracy.
 
 Trouver [sur ce lien](https://drive.google.com/file/d/1ZEuK3JYIgXhG90rKUyq2rLAZW4VexD5J/view?usp=drive_link) un dataset avec les noms de video, et le label pour chaque token. <br/>
 (Remarque: le modèle peut être entraîné sur MultiNERD, puis le dataset France Inter).
-
-## Part 2: Full-pipeline trouver noms de comiques dans les videos.
-
-Avec un modèle:
-- titre de video -> is_comic
-- titre de video -> nom de personne dans le titre
-
-Faire une pipeline [titres de video] -> [(nom de comiques, liste des videos où il apparaît)]
 
 ## TODO
 
