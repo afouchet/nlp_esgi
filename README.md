@@ -215,3 +215,5 @@ list(titres de videos) -> list(noms de comiques)
 Vous enverrez un CSV video_name,comic_names sortant les prédictions de votre few-shot learner.
 
 Vous enverrez votre rapport montrant les expérimentations et ce qui a marché.
+
+Envoyer ces documents via MyGES.
