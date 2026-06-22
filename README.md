@@ -179,3 +179,6 @@ Vous avez entraîné un modèle français prédisant si un mot est un nom de per
 - Vos prediction sur le jeu de données France Inter
 - Le nom de votre modèle sur HuggingFace
 
+Créer 1 archive zip avec tous vos fichiers. <br/>
+**Vérifier qu'elle contient tous les fichiers!** Dézipper là dans un autre dossier et vérifier que le code fonctionne avec seulement les fichiers du zip. <br/>
+Envoyer cette archive zip via MyGES.
