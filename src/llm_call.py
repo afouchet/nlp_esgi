@@ -1,15 +1,21 @@
+import os
+from dotenv import load_dotenv
+
 import openai
 from pydantic import BaseModel
 
+
+load_dotenv()
+
 client = openai.OpenAI(
      base_url="https://api.groq.com/openai/v1",
-     api_key="YOUR_API_KEY",
+     api_key=os.environ["GROQ_API_KEY"],
 )
 
 # Call classic
 reply = client.chat.completions.create(
     messages=[{"role": "user", "content": "Who is the best NLP teacher?"}],
-    model="llama-3.3-70b-versatile",
+    model="openai/gpt-oss-20b",
 )
 print(reply.choices[0].message.content)
 

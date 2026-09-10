@@ -3,22 +3,28 @@ name = "nlp-esgi"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.11"
+authors = [
+    { name = "Arnaud Fouchet", email = "foucheta@gmail.com" }
+]
+requires-python = ">=3.14"
 dependencies = [
-    "click>=8.2.1",
-    "evaluate>=0.4.5",
+    "click>=8.5.0",
+    "evaluate>=0.4.6",
     "jupyter>=1.1.1",
     "nltk>=3.9.1",
-    "openai>=1.105.0",
-    "pandas>=2.3.2",
     "scikit-learn>=1.7.1",
+    "pandas>=3.0.5",
     "seqeval>=1.2.2",
-    "torch>=2.8.0",
-    "transformers[torch]>=4.56.0",
+    "torch>=2.14.0",
+    "transformers[torch]>=5.17.0",
+    "openai>=3.11.0",
+    "dotenv>=0.9.9",
+    "ipython>=9.17.1",
 ]
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[project.scripts]
+nlp-esgi = "nlp_esgi:main"
 
-[tool.setuptools.package-dir]
-"" = "src"
+[build-system]
+requires = ["uv_build>=0.12.6,<0.13.0"]
+build-backend = "uv_build"
