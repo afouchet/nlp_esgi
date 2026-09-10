@@ -16,7 +16,7 @@ Vous allez rendre un rapport avec vos différentes expérimentations. Quelles di
 
 Créer un compte et créer une clé API.
 
-Mettez là dans le script src/llm_call.py et faites tourner
+Créez un `.env` en copiant `.env.example` et en mettant votre API-key
 
 ```bash
 uv run python src/llm_call.py
