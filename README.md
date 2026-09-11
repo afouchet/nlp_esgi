@@ -51,7 +51,7 @@ Trouver data/raw/train_named_entity_recognition.csv un dataset avec les noms de 
 1. Run le notebook sur multiNERD en anglais
 2. Prendre un modèle CamemBERT et run sur multiNERD en français. Avoir 99%+ accuracy
 3. Faire fonction predict at word level
-4. Prédire sur le dataset France Inter
+4. Prédire sur le dataset France Inter, disponible, dans le zip, dans data/raw/train_named_entity_recognition.csv ou sur [ce lien](https://drive.google.com/file/d/1-7-esuAMBDzjN2DQsUD9Up7z7bIRwahL/view?usp=sharing)
 5. Uploader votre modèle sur HuggingFace
 
 ## !! Timeline !! (**Points en moins si non respectée**)
