@@ -20,6 +20,7 @@ dependencies = [
     "openai>=3.11.0",
     "dotenv>=0.9.9",
     "ipython>=9.17.1",
+    "flagembedding>=1.4.2",
 ]
 
 [project.scripts]
