@@ -23,3 +23,5 @@ Vous avez implémenté Small2Big<br/>
 - un CSV avec chunk,embedding
 
 Envoyer ces documents via MyGES.
+
+**Vous devez avoir répondu aux 27 questions!**
