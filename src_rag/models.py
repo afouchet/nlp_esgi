@@ -1,19 +1,43 @@
-import numpy as np
+import os
 import re
-import tiktoken
+
+import numpy as np
 import openai
-import yaml
+import tiktoken
+from dotenv import load_dotenv
 
-from FlagEmbedding import FlagModel
+from src_rag import embedding
 
-CONF = yaml.safe_load(open("config.yml"))
 
-CLIENT = openai.OpenAI(
-    base_url="https://api.groq.com/openai/v1",
-    api_key=CONF["groq_key"],
-)
+load_dotenv()
 
 tokenizer = tiktoken.get_encoding("cl100k_base")
+
+EMBEDDER_MODEL = "BAAI/bge-base-en-v1.5"
+EMBEDDER_QUERY_INSTRUCTION = "Represent this sentence for searching relevant passages:"
+
+
+def get_model_name(provider=None):
+    provider = provider or os.environ["LLM_PROVIDER"]
+    return {
+        "GROQ": "openai/gpt-oss-20b",
+        "OPEN_ROUTER": "openai/gpt-oss-20b",
+        # "OPEN_ROUTER": "nex-agi/nex-n2.5-mini:free",
+    }[provider]
+
+
+def get_client(provider=None):
+    provider = provider or os.environ["LLM_PROVIDER"]
+    url = {
+        "GROQ": "https://api.groq.com/openai/v1",
+        "OPEN_ROUTER": "https://openrouter.ai/api/v1",
+    }[provider]
+
+    return openai.OpenAI(
+        base_url=url,
+        api_key=os.environ[f"{provider}_API_KEY"],
+    )
+
 
 def get_model(config):
     if config:
@@ -23,14 +47,15 @@ def get_model(config):
 
 
 class RAG:
-    def __init__(self, chunk_size=256):
+    def __init__(self, chunk_size=256, provider=None):
         self._chunk_size = chunk_size
-        self._embedder = None
         self._loaded_files = set()
         self._texts = []
         self._chunks = []
         self._corpus_embedding = None
-        self._client = CLIENT
+        self._provider = provider or os.environ["LLM_PROVIDER"]
+        self._client = get_client(self._provider)
+        self._model_name = get_model_name(self._provider)
 
     def load_files(self, filenames):
         texts = []
@@ -61,8 +86,7 @@ class RAG:
         return self._chunks
 
     def embed_questions(self, questions):
-        embedder = self.get_embedder()
-        return embedder.encode(questions)
+        return self._embed(questions)
 
     def _compute_chunks(self, texts):
         return sum(
@@ -71,24 +95,21 @@ class RAG:
         )
 
     def embed_corpus(self, chunks):
-        embedder = self.get_embedder()
-        return embedder.encode(chunks)
+        return self._embed(chunks)
 
-    def get_embedder(self):
-        if not self._embedder:
-            self._embedder = FlagModel(
-                'BAAI/bge-base-en-v1.5',
-                query_instruction_for_retrieval="Represent this sentence for searching relevant passages:",
-                use_fp16=True,
-            )
-
-        return self._embedder
+    def _embed(self, texts):
+        return embedding.embed(
+            texts,
+            EMBEDDER_MODEL,
+            query_instruction_for_retrieval=EMBEDDER_QUERY_INSTRUCTION,
+            use_fp16=True,
+        )
 
     def reply(self, query):
         prompt = self._build_prompt(query)
         res = self._client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="openai/gpt-oss-20b",
+            model=self._model_name,
         )
         return res.choices[0].message.content
         

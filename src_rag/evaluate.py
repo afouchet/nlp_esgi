@@ -90,7 +90,7 @@ def evaluate_retrieval(rag, filenames, df_question):
     for _, row  in df_question.iterrows():
         chunks = rag._get_context(row.question)
         try:
-            rank = next(i for i, c in enumerate(chunks) if row.text_answering in c)
+            rank = next(i + 1 for i, c in enumerate(chunks) if row.text_answering in c)
         except StopIteration:
             rank = 0
 
