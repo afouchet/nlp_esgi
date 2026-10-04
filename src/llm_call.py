@@ -35,6 +35,8 @@ def main():
     )
     
     print(reply.choices[0].message.content)
+
+
 def get_model_name(provider):
     return {
         "GROQ": "openai/gpt-oss-20b",
