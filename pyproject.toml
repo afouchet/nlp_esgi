@@ -23,6 +23,7 @@ dependencies = [
     "flagembedding>=1.4.2",
     "mlflow>=3.16.1",
     "tiktoken>=0.14.0",
+    "ipdb>=0.13.13",
 ]
 
 [project.scripts]

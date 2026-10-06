@@ -22,6 +22,9 @@ Dans votre embedding config, il peut y avoir:
 - S'il y a un pré-traitement du texte (HyDE, FAQ,...)
 ⚠️
 
+Je fournis un CSV questions.csv, ne s'intéressant qu'aux 5 films précisés dans evaluate.py.
+Puis un CSV questions_long.csv, s'intéressant à tous les films
+
 A faire:
 - Changer .env.example en .env. Y ajouter une api_key Groq / OpenRouter pour pouvoir générer le texte
 - Run the code
