@@ -7,13 +7,10 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from tqdm import tqdm
 from time import sleep
-import yaml
 
 from src_rag import models
 
 from FlagEmbedding import FlagModel
-
-CONF = yaml.safe_load(open("config.yml"))
 
 FOLDER = Path("data") / "raw" / "movies" / "wiki"
 FILENAMES = [
@@ -24,11 +21,12 @@ DF = pd.read_csv("data/raw/movies/questions.csv", sep=";")
 ENCODER = SentenceTransformer('all-MiniLM-L6-v2')
 
 
-def _load_ml_flow(conf):
+def _load_ml_flow():
     mlflow.set_experiment("RAG_Movies_clean")
 
 
-_load_ml_flow(CONF)
+_load_ml_flow()
+
 
 def run_evaluate_retrieval(config, rag=None):
     rag = rag or models.get_model(config)
