@@ -24,6 +24,7 @@ Dans votre embedding config, il peut y avoir:
 
 Je fournis un CSV questions.csv, ne s'intéressant qu'aux 5 films précisés dans evaluate.py.
 Puis un CSV questions_long.csv, s'intéressant à tous les films
+Puis un CSV questions_test.csv, avec des questions sans la réponse attendue
 
 A faire:
 - Changer .env.example en .env. Y ajouter une api_key Groq / OpenRouter pour pouvoir générer le texte
@@ -40,6 +41,8 @@ Changer la taille des chunks, overlap, small2Big, embedding de sorte à avoir le
 A rendre:
 - Code dans src_rag/
 - Rapport sur les différentes méthodes utilisées, leurs performances (MRR, reply similarity)
+- un chunk.parquet avec les chunks des documents et leur embedding
+- un question.parquet avec les question de questions_test, leur embedding, et la réponse de votre RAG
 
 Créer 1 archive zip avec tous vos fichiers. <br/>
 Envoyer cette archive zip via MyGES.
