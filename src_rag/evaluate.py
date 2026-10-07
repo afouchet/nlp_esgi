@@ -152,6 +152,6 @@ def calc_semantic_similarity(generated_answer: str, reference_answer: str) -> fl
 
 if __name__ == "__main__":
     model_config = {"chunk_size": 512}
-    # run_evaluate_retrieval({"model": model_config})
-    run_evaluate_reply({"model": model_config})
+    run_evaluate_retrieval({"model": model_config})
+    # run_evaluate_reply({"model": model_config})
 
