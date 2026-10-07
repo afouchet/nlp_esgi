@@ -8,6 +8,17 @@
 uv sync
 ```
 
+⚠️ **Utilisateurs Mac (M1/M2/M3, GPU MPS)** : l'entraînement plante avec l'erreur
+`scaled_dot_product_attention for MPS does not support dropout`. <br/>
+Solution : charger le modèle avec `attn_implementation="eager"` :
+
+```python
+model = AutoModelForTokenClassification.from_pretrained(
+    model_name, num_labels=2, attn_implementation="eager",
+)
+```
+
+
 **M'appeler si "uv sync" ne marche pas**
 
 ## Part 1: Named-entity recognition
